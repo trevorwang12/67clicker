@@ -1,9 +1,9 @@
 {
   "branding": {
     "showLogo": true,
-    "logoText": "Take Care of Shadow Milk",
+    "logoText": "rule34dle fan page ",
     "logoIcon": "gamepad2",
-    "description": "Virtual Pet Simulator featuring Shadow Milk Cookie!",
+    "description": "A Higher or Lower Game",
     "customDescription": ""
   },
   "navigation": {
@@ -123,7 +123,7 @@
   },
   "copyright": {
     "isVisible": true,
-    "text": "@{siteName}. Take Care of Shadow Milk is an independent website. It is not affiliated with any organizations.All rights reserved.",
+    "text": "@{siteName}. rule34dle.net is an independent website. It is not affiliated with any organizations.All rights reserved.",
     "customText": ""
   },
   "friendlyLinks": {
