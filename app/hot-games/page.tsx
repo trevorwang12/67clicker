@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import HotGamesClient from './HotGamesClient'
 import { promises as fs } from 'fs'
 import path from 'path'
+import { getCurrentSiteConfig } from '@/config/default-settings'
 
 async function loadSEOSettings() {
   try {
@@ -10,13 +11,14 @@ async function loadSEOSettings() {
     return JSON.parse(fileContent)
   } catch (error) {
     console.error('Failed to load SEO settings:', error)
+    const defaultConfig = getCurrentSiteConfig()
     return {
       seoSettings: {
-        siteName: 'GAMES',
-        siteUrl: 'https://rule34dle.net',
-        author: 'Gaming Platform',
-        ogImage: '/og-image.png',
-        twitterHandle: '@rule34dle'
+        siteName: defaultConfig.siteName,
+        siteUrl: defaultConfig.siteUrl,
+        author: defaultConfig.author,
+        ogImage: defaultConfig.ogImage,
+        twitterHandle: defaultConfig.twitterHandle
       }
     }
   }
@@ -28,7 +30,8 @@ export async function generateMetadata(): Promise<Metadata> {
   
   const title = `Hot Games - ${seoSettings?.siteName || 'GAMES'}`
   const description = 'Play the hottest and most popular games! Discover trending games that everyone is playing.'
-  const pageUrl = `${(seoSettings?.siteUrl || 'https://rule34dle.net').replace(/\/$/, '')}/hot-games`
+  const defaultConfig = getCurrentSiteConfig()
+  const pageUrl = `${(seoSettings?.siteUrl || defaultConfig.siteUrl).replace(/\/$/, '')}/hot-games`
   
   return {
     title,
@@ -54,7 +57,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
       images: [seoSettings?.ogImage || '/og-image.png'],
-      site: seoSettings?.twitterHandle || '@rule34dle',
+      site: seoSettings?.twitterHandle || defaultConfig.twitterHandle,
     },
     alternates: {
       canonical: pageUrl,

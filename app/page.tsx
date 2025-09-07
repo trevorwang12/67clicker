@@ -212,7 +212,7 @@ export default function HomePage() {
         {/* Main H1 Title */}
         <PageH1 
           pageType="homepage" 
-          data={{ siteName: seoData?.seoSettings?.siteName || 'Worldguessr fan page' }} 
+          data={{ siteName: seoData?.seoSettings?.siteName || 'Rule34dle Gaming' }} 
           className="text-center mb-8"
         />
 

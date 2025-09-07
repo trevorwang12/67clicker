@@ -19,4 +19,4 @@ Disallow: /ad-script-test
 Disallow: /debug*
 
 # Sitemap
-Sitemap: https://worldguessr.pro/sitemap.xml
+Sitemap: https://rule34dle.net/sitemap.xml

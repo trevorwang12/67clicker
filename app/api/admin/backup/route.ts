@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminResponse, logAdminAccess } from '@/lib/admin-security'
+import { getCurrentSiteConfig } from '@/config/default-settings'
 import { promises as fs } from 'fs'
 import path from 'path'
 
@@ -99,7 +100,8 @@ export async function GET(request: NextRequest) {
     }
 
     // 返回可下载的JSON文件
-    const fileName = `worldguessr-backup-${new Date().toISOString().split('T')[0]}.json`
+    const config = getCurrentSiteConfig()
+    const fileName = `${config.backupPrefix}-backup-${new Date().toISOString().split('T')[0]}.json`
     
     return new NextResponse(JSON.stringify(allData, null, 2), {
       headers: {

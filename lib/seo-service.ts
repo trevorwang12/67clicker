@@ -1,5 +1,6 @@
 // SEO数据服务 - 分离SEO逻辑
 import { DataService } from './data-service'
+import { getCurrentSiteConfig } from '@/config/default-settings'
 import type { Metadata } from 'next'
 
 export interface SeoSettings {
@@ -84,10 +85,15 @@ export class SeoService {
       console.error('Failed to generate metadata:', error)
       
       // 返回安全的默认metadata
+      const defaultConfig = getCurrentSiteConfig()
       return {
-        title: 'GAMES',
-        description: 'Best Online Gaming Platform - Play hundreds of free browser games',
+        title: defaultConfig.siteName,
+        description: defaultConfig.siteDescription,
         generator: 'Next.js',
+        metadataBase: new URL(defaultConfig.siteUrl),
+        alternates: {
+          canonical: defaultConfig.siteUrl,
+        },
       }
     }
   }
