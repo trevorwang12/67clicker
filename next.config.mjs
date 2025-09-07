@@ -52,27 +52,9 @@ const nextConfig = {
   },
   
   // Bundle analyzer for production optimization
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Simple vendor chunk splitting only
-    if (!dev && !isServer) {
-      config.optimization.splitChunks = {
-        ...config.optimization.splitChunks,
-        cacheGroups: {
-          ...config.optimization.splitChunks.cacheGroups,
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            priority: 10,
-            chunks: 'all',
-            enforce: true,
-            maxSize: 244000,
-          },
-        },
-      }
-    }
-    
-    return config
-  },
+  // Removed webpack customization to fix CSS being loaded as JS
+  // The custom webpack configuration was causing Next.js to generate
+  // incorrect <script> tags for CSS files instead of <link> tags
   // Performance optimizations
   swcMinify: true,
   poweredByHeader: false,
