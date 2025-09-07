@@ -44,7 +44,7 @@ const nextConfig = {
       'lucide-react',
     ],
     serverComponentsExternalPackages: [],
-    optimizeCss: true,
+    // optimizeCss: true, // Disabled due to critters dependency issue on Vercel
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
