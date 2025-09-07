@@ -14,18 +14,37 @@ interface PageH1Props {
 }
 
 export default function PageH1({ pageType, template, data = {}, className = '' }: PageH1Props) {
+  const [isClient, setIsClient] = useState(false)
   const [headingText, setHeadingText] = useState<string>('')
   const [headingStructure, setHeadingStructure] = useState<any>(null)
   
+  // 生成fallback标题，确保总是有内容显示
+  const getFallbackTitle = () => {
+    switch (pageType) {
+      case 'homepage':
+        return `${data.siteName || 'GAMES'} - Best Free Online Games`
+      case 'gamePage':
+        return data.gameName || 'Game'
+      case 'categoryPage':
+        return `${data.categoryName || 'Category'} Games`
+      default:
+        return data.siteName || 'GAMES'
+    }
+  }
+
+  // 初始服务端渲染使用fallback标题
+  const initialTitle = getFallbackTitle()
+  
   useEffect(() => {
+    setIsClient(true)
     loadHeadingStructure()
   }, [])
   
   useEffect(() => {
-    if (headingStructure) {
+    if (isClient && headingStructure) {
       generateHeading()
     }
-  }, [headingStructure, pageType, template, data])
+  }, [isClient, headingStructure, pageType, template, data])
   
   const loadHeadingStructure = async () => {
     try {
@@ -84,24 +103,11 @@ export default function PageH1({ pageType, template, data = {}, className = '' }
       text = text.replace('{categoryName}', data.categoryName || 'Category')
     }
     
-    setHeadingText(text || data.siteName || 'GAMES')
+    setHeadingText(text || getFallbackTitle())
   }
   
-  // 生成fallback标题，确保总是有内容显示
-  const getFallbackTitle = () => {
-    switch (pageType) {
-      case 'homepage':
-        return `${data.siteName || 'GAMES'} - Best Free Online Games`
-      case 'gamePage':
-        return data.gameName || 'Game'
-      case 'categoryPage':
-        return `${data.categoryName || 'Category'} Games`
-      default:
-        return data.siteName || 'GAMES'
-    }
-  }
-  
-  const displayText = headingText || getFallbackTitle()
+  // 使用服务端安全的显示文本
+  const displayText = isClient ? (headingText || initialTitle) : initialTitle
   
   return (
     <h1 className={`text-3xl font-bold text-gray-900 mb-6 ${className}`}>

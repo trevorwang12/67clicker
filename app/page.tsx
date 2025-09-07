@@ -210,11 +210,18 @@ export default function HomePage() {
 
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Main H1 Title */}
-        <PageH1 
-          pageType="homepage" 
-          data={{ siteName: seoData?.seoSettings?.siteName || 'Rule34dle Gaming' }} 
-          className="text-center mb-8"
-        />
+        {isClient && (
+          <PageH1 
+            pageType="homepage" 
+            data={{ siteName: seoData?.seoSettings?.siteName || 'GAMES' }} 
+            className="text-center mb-8"
+          />
+        )}
+        {!isClient && (
+          <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center mb-8">
+            GAMES - Best Free Online Games
+          </h1>
+        )}
 
         <div className="flex gap-6">
           {/* Main Content */}
@@ -326,7 +333,7 @@ export default function HomePage() {
             <AdSlot position="content-top" className="mb-8" />
 
             {/* New Games Section */}
-            {homepageContent?.newGames?.isVisible && (
+            {isClient && homepageContent?.newGames?.isVisible && (
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-6 text-gray-800">{homepageContent.newGames.title}</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -362,7 +369,7 @@ export default function HomePage() {
             <AdSlot position="content-bottom" className="mb-8" />
 
             {/* Features Section */}
-            {homepageContent?.features?.isVisible && (
+            {isClient && homepageContent?.features?.isVisible && (
               <div className="mb-12">
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {homepageContent.features.sections.instantPlay.isVisible && (
@@ -409,7 +416,7 @@ export default function HomePage() {
             )}
 
             {/* What is Section */}
-            {homepageContent?.whatIs?.isVisible && (
+            {isClient && homepageContent?.whatIs?.isVisible && (
               <div className="mb-12">
                 <div className="bg-white border border-gray-200 rounded-lg p-8">
                   <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">{homepageContent.whatIs.title}</h2>
@@ -441,7 +448,7 @@ export default function HomePage() {
             )}
 
             {/* How to Play Section */}
-            {homepageContent?.howToPlay?.isVisible && (
+            {isClient && homepageContent?.howToPlay?.isVisible && (
               <div className="mb-12">
                 <div className="bg-white border border-gray-200 rounded-lg p-8">
                   <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">{homepageContent.howToPlay.title}</h2>
@@ -481,7 +488,7 @@ export default function HomePage() {
             )}
 
             {/* Why Choose Us Section */}
-            {homepageContent?.whyChooseUs?.isVisible && (
+            {isClient && homepageContent?.whyChooseUs?.isVisible && (
               <div className="mb-12">
                 <div className="bg-white border border-gray-200 rounded-lg p-8">
                   <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">{homepageContent.whyChooseUs.title}</h2>
@@ -521,7 +528,7 @@ export default function HomePage() {
             )}
 
             {/* FAQ Section */}
-            {homepageContent?.faq?.isVisible && (
+            {isClient && homepageContent?.faq?.isVisible && (
               <div className="mb-12">
                 <div className="bg-white border border-gray-200 rounded-lg p-8">
                   <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">{homepageContent.faq.title}</h2>
@@ -545,7 +552,7 @@ export default function HomePage() {
             <div className="bg-gray-50 rounded-lg p-4">
               <h3 className="text-xl font-bold mb-6 text-gray-800">Hot games</h3>
               <div className="grid grid-cols-2 gap-3">
-                {hotGames.map((game, index) => (
+                {isClient && hotGames.map((game, index) => (
                   <Link key={index} href={`/game/${game.id}`} className="group">
                     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow h-full flex flex-col">
                       <div className="aspect-[4/3] overflow-hidden relative flex-shrink-0">
