@@ -39,7 +39,13 @@ export default function SafeScriptExecutor({ htmlContent, containerId }: SafeScr
       
       // 设置脚本内容
       if (script.src) {
-        newScript.src = script.src
+        // CRITICAL FIX: Validate src is actually a JS file, not CSS
+        const srcUrl = script.src
+        if (srcUrl && (srcUrl.endsWith('.css') || srcUrl.includes('/css/'))) {
+          console.error('[SafeScriptExecutor] BLOCKED: Attempted to load CSS as script:', srcUrl)
+          return // Skip this script entirely
+        }
+        newScript.src = srcUrl
         newScript.async = true
       } else if (script.textContent) {
         newScript.textContent = script.textContent

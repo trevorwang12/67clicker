@@ -21,9 +21,17 @@ interface SafeAdData {
 }
 
 export default function SafeAdSlot({ position, className = '' }: AdSlotProps) {
-  // EMERGENCY FIX: Disable ad loading due to CSS being loaded as JS
-  // This prevents the MIME type error breaking the entire site
-  return null
+  const [adData, setAdData] = useState<SafeAdData | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<AppError | null>(null)
+  const hasLoaded = useRef(false)
+  
+  useEffect(() => {
+    if (hasLoaded.current) return
+    hasLoaded.current = true
+    
+    loadAdData()
+  }, [position])
   
   const loadAdData = async () => {
     setIsLoading(true)

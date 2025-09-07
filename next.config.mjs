@@ -67,9 +67,22 @@ const nextConfig = {
             enforce: true,
             maxSize: 244000, // 244kb max chunk size
           },
+          styles: {
+            name: 'styles',
+            test: /\.css$/,
+            chunks: 'all',
+            enforce: true,
+          },
         },
       }
     }
+    
+    // Add debugging for CSS/JS confusion
+    if (!dev && !isServer) {
+      config.resolve.extensions = config.resolve.extensions.filter(ext => ext !== '.css')
+      config.resolve.extensions.push('.css')
+    }
+    
     return config
   },
   // Performance optimizations
