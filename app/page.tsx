@@ -218,7 +218,7 @@ export default function HomePage() {
           />
         )}
         {!isClient && (
-          <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">
             GAMES - Best Free Online Games
           </h1>
         )}
@@ -332,8 +332,8 @@ export default function HomePage() {
             {/* Ad Slot - Content Top Position */}
             <AdSlot position="content-top" className="mb-8" />
 
-            {/* New Games Section */}
-            {isClient && homepageContent?.newGames?.isVisible && (
+            {/* New Games Section - Only render when both client and data are ready */}
+            {isClient && homepageContent?.newGames?.isVisible && newGames.length > 0 && (
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-6 text-gray-800">{homepageContent.newGames.title}</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -555,7 +555,7 @@ export default function HomePage() {
             <div className="bg-gray-50 rounded-lg p-4">
               <h3 className="text-xl font-bold mb-6 text-gray-800">Hot games</h3>
               <div className="grid grid-cols-2 gap-3">
-                {isClient && hotGames.map((game, index) => (
+                {isClient && hotGames.length > 0 && hotGames.map((game, index) => (
                   <Link key={index} href={`/game/${game.id}`} className="group">
                     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow h-full flex flex-col">
                       <div className="aspect-[4/3] overflow-hidden relative flex-shrink-0 bg-gray-100">

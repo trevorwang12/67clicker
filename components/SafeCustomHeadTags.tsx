@@ -18,12 +18,13 @@ export default async function SafeCustomHeadTags() {
   const scriptSrcMatch = customHeadTags.match(/<script[^>]+src="([^"]+)"[^>]*>/);
   const scriptContentMatch = customHeadTags.match(/<script>([^<]+)<\/script>/);
   const dataDomainMatch = customHeadTags.match(/data-domain="([^"]+)"/);
+  const isDeferMatch = customHeadTags.match(/\sdefer\s/);
   
   return (
     <>
       {scriptSrcMatch && (
         <script 
-          defer 
+          {...(isDeferMatch ? { defer: true } : {})}
           data-domain={dataDomainMatch ? dataDomainMatch[1] : "worldguessr.pro"}
           src={scriptSrcMatch[1]}
         />
