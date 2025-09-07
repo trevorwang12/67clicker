@@ -53,7 +53,7 @@ const nextConfig = {
   
   // Bundle analyzer for production optimization
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Reduce bundle size
+    // Simple vendor chunk splitting only
     if (!dev && !isServer) {
       config.optimization.splitChunks = {
         ...config.optimization.splitChunks,
@@ -65,22 +65,10 @@ const nextConfig = {
             priority: 10,
             chunks: 'all',
             enforce: true,
-            maxSize: 244000, // 244kb max chunk size
-          },
-          styles: {
-            name: 'styles',
-            test: /\.css$/,
-            chunks: 'all',
-            enforce: true,
+            maxSize: 244000,
           },
         },
       }
-    }
-    
-    // Add debugging for CSS/JS confusion
-    if (!dev && !isServer) {
-      config.resolve.extensions = config.resolve.extensions.filter(ext => ext !== '.css')
-      config.resolve.extensions.push('.css')
     }
     
     return config

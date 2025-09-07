@@ -39,12 +39,32 @@ export default function SafeScriptExecutor({ htmlContent, containerId }: SafeScr
       
       // 设置脚本内容
       if (script.src) {
-        // CRITICAL FIX: Validate src is actually a JS file, not CSS
         const srcUrl = script.src
+        
+        // CRITICAL FIX: Multiple security validations
         if (srcUrl && (srcUrl.endsWith('.css') || srcUrl.includes('/css/'))) {
           console.error('[SafeScriptExecutor] BLOCKED: Attempted to load CSS as script:', srcUrl)
-          return // Skip this script entirely
+          return
         }
+        
+        // Block suspicious ad domains that may cause CSS/JS confusion
+        const suspiciousDomains = [
+          'revenuecpmgate.com',
+          'highperformanceformat.com',
+          // Add more suspicious domains as needed
+        ]
+        
+        if (suspiciousDomains.some(domain => srcUrl.includes(domain))) {
+          console.warn('[SafeScriptExecutor] BLOCKED suspicious domain:', srcUrl)
+          return
+        }
+        
+        // Only allow HTTPS scripts in production
+        if (process.env.NODE_ENV === 'production' && srcUrl.startsWith('http://')) {
+          console.error('[SafeScriptExecutor] BLOCKED: HTTP script in production:', srcUrl)
+          return
+        }
+        
         newScript.src = srcUrl
         newScript.async = true
       } else if (script.textContent) {
