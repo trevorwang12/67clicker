@@ -62,6 +62,10 @@
           "value": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
         },
         {
+          "key": "Cache-Bust",
+          "value": "v2025-09-07-fix"
+        },
+        {
           "key": "Link",
           "value": "<https://fonts.googleapis.com>; rel=preconnect, <https://fonts.gstatic.com>; rel=preconnect; crossorigin"
         }
