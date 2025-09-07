@@ -340,13 +340,16 @@ export default function HomePage() {
                   {newGames.map((game, index) => (
                     <Link key={index} href={`/game/${game.id}`} className="group">
                       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow h-full flex flex-col">
-                        <div className="aspect-[4/3] overflow-hidden flex-shrink-0">
+                        <div className="aspect-[4/3] overflow-hidden flex-shrink-0 relative bg-gray-100">
                           <img 
                             src={game.thumbnailUrl?.replace(/\.png$/i, '.webp') || "/placeholder.svg"} 
                             alt={game.name} 
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                             loading={index < 4 ? "eager" : "lazy"}
                             fetchPriority={index < 2 ? "high" : "auto"}
+                            width="285"
+                            height="202"
+                            style={{ aspectRatio: '4/3' }}
                             onError={(e) => {
                               const img = e.target as HTMLImageElement;
                               if (img.src.includes('.webp')) {
@@ -555,12 +558,15 @@ export default function HomePage() {
                 {isClient && hotGames.map((game, index) => (
                   <Link key={index} href={`/game/${game.id}`} className="group">
                     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow h-full flex flex-col">
-                      <div className="aspect-[4/3] overflow-hidden relative flex-shrink-0">
+                      <div className="aspect-[4/3] overflow-hidden relative flex-shrink-0 bg-gray-100">
                         <img 
                           src={game.thumbnailUrl?.replace(/\.png$/i, '.webp') || "/placeholder.svg"} 
                           alt={game.name} 
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                           loading="lazy"
+                          width="160"
+                          height="120"
+                          style={{ aspectRatio: '4/3' }}
                           onError={(e) => {
                             const img = e.target as HTMLImageElement;
                             if (img.src.includes('.webp')) {

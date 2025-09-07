@@ -43,10 +43,34 @@ const nextConfig = {
       '@radix-ui/react-tooltip',
       'lucide-react',
     ],
+    serverComponentsExternalPackages: [],
+    optimizeCss: true,
   },
   compiler: {
-    // Temporarily disable console removal for debugging
-    // removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: process.env.NODE_ENV === 'production',
+    styledComponents: false,
+  },
+  
+  // Bundle analyzer for production optimization
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Reduce bundle size
+    if (!dev && !isServer) {
+      config.optimization.splitChunks = {
+        ...config.optimization.splitChunks,
+        cacheGroups: {
+          ...config.optimization.splitChunks.cacheGroups,
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            priority: 10,
+            chunks: 'all',
+            enforce: true,
+            maxSize: 244000, // 244kb max chunk size
+          },
+        },
+      }
+    }
+    return config
   },
   // Performance optimizations
   swcMinify: true,
