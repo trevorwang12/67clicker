@@ -13,10 +13,10 @@ async function loadSEOSettings() {
     return {
       seoSettings: {
         siteName: 'GAMES',
-        siteUrl: 'https://worldguessr.pro',
+        siteUrl: 'https://rule34dle.net',
         author: 'Gaming Platform',
         ogImage: '/og-image.png',
-        twitterHandle: '@worldguessr'
+        twitterHandle: '@rule34dle'
       }
     }
   }
@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
   
   const title = `Hot Games - ${seoSettings?.siteName || 'GAMES'}`
   const description = 'Play the hottest and most popular games! Discover trending games that everyone is playing.'
-  const pageUrl = `${(seoSettings?.siteUrl || 'https://worldguessr.pro').replace(/\/$/, '')}/hot-games`
+  const pageUrl = `${(seoSettings?.siteUrl || 'https://rule34dle.net').replace(/\/$/, '')}/hot-games`
   
   return {
     title,
@@ -54,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
       images: [seoSettings?.ogImage || '/og-image.png'],
-      site: seoSettings?.twitterHandle || '@worldguessr',
+      site: seoSettings?.twitterHandle || '@rule34dle',
     },
     alternates: {
       canonical: pageUrl,

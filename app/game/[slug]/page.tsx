@@ -38,10 +38,10 @@ async function loadSEOSettings() {
     return {
       seoSettings: {
         siteName: 'GAMES',
-        siteUrl: 'https://worldguessr.pro',
+        siteUrl: 'https://rule34dle.net',
         author: 'Gaming Platform',
         ogImage: '/og-image.png',
-        twitterHandle: '@worldguessr'
+        twitterHandle: '@rule34dle'
       },
       gamePageSEO: {
         titleTemplate: '{gameName} - Play Free Online | {siteName}',
@@ -87,7 +87,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ?.replace('{gameName}', game.name)
     ?.replace('{category}', game.category || 'game') || `${game.name}, free game, online game`
   
-  const gameUrl = `${(seoSettings?.siteUrl || 'https://worldguessr.pro').replace(/\/$/, '')}/game/${params.slug}`
+  const gameUrl = `${(seoSettings?.siteUrl || 'https://rule34dle.net').replace(/\/$/, '')}/game/${params.slug}`
   
   // 生成结构化数据
   const jsonLd = {
@@ -130,7 +130,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title,
       description,
       images: [game.thumbnailUrl || seoSettings?.ogImage || '/placeholder-game.png'],
-      site: seoSettings?.twitterHandle || '@worldguessr',
+      site: seoSettings?.twitterHandle || '@rule34dle',
     },
     alternates: {
       canonical: gameUrl,

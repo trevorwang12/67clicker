@@ -15,7 +15,6 @@ import GamePlayer from '@/components/GamePlayer'
 import YouMightAlsoLike from '@/components/YouMightAlsoLike'
 import InstantSearch from '@/components/InstantSearch'
 import SEOHead from '@/components/SEOHead'
-import DynamicSEO from '@/components/DynamicSEO'
 import PageH1 from '@/components/PageH1'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -202,11 +201,6 @@ export default function HomePage() {
     <div className="min-h-screen bg-white">
       {/* SEO Head Component */}
       <SEOHead pageType="home" />
-      <DynamicSEO 
-        title={seoData?.seoSettings?.siteName || 'GAMES - Play Free Online Games'}
-        description={seoData?.seoSettings?.siteDescription || 'Play the best free online games'}
-        canonical={seoData?.seoSettings?.siteUrl || 'https://worldguessr.pro'}
-      />
       
       {/* Header */}
       <Header />

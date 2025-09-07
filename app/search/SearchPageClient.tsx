@@ -1,26 +1,77 @@
-import type { Metadata } from 'next'
-import SearchPageClient from './SearchPageClient'
-export const metadata: Metadata = {
-  title: 'Search Games - GAMES',
-  description: 'Search for your favorite free online games. Find action, puzzle, adventure and more games.',
-  keywords: ['search games', 'find games', 'online games', 'browser games'],
-  robots: 'index, follow',
-  alternates: {
-    canonical: 'https://rule34dle.net/search',
-  },
-}
+"use client"
 
-export default function SearchPage() {
-  return <SearchPageClient />
-}
+import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Search, Play, Star, ArrowLeft, Gamepad2 } from "lucide-react"
+import { simpleSearch, GameData } from "@/lib/simple-search"
+import AdSlot from "@/components/SafeAdSlot"
+import PageH1 from "@/components/PageH1"
+import YouMightAlsoLike from "@/components/YouMightAlsoLike"
+import Header from "@/components/Header"
+import Footer from "@/components/Footer"
+
+export default function SearchPageClient() {
+  const searchParams = useSearchParams()
+  const query = searchParams.get('q') || ''
+  const [searchTerm, setSearchTerm] = useState(query)
+  const [searchResults, setSearchResults] = useState<GameData[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    if (query) {
+      setSearchTerm(query)
+      performSearch(query)
+    }
+  }, [query])
+
+  const performSearch = async (term: string) => {
+    setIsLoading(true)
+    try {
+      console.log('Performing search for:', term)
+      const results = await simpleSearch.searchGames(term)
+      console.log('Search results:', results.length, 'games found')
+      setSearchResults(results)
+    } catch (error) {
+      console.error('Search error:', error)
+      setSearchResults([])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchTerm.trim()) {
+      performSearch(searchTerm.trim())
+      // 更新URL
+      window.history.pushState({}, '', `/search?q=${encodeURIComponent(searchTerm.trim())}`)
+    }
+  }
+
+  const [hotGames, setHotGames] = useState<GameData[]>([])
+  const [newGames, setNewGames] = useState<GameData[]>([])
+
+  // Load initial data
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        const hot = await simpleSearch.getHotGames(8)
+        const newest = await simpleSearch.getNewGames(8)
+        setHotGames(hot)
+        setNewGames(newest)
+      } catch (error) {
+        console.error('Error loading initial data:', error)
+      }
+    }
+    loadInitialData()
+  }, [])
 
   return (
     <div className="min-h-screen bg-white">
-      <DynamicSEO 
-        title={query ? `Search Results for "${query}" - GAMES` : 'Search Games - GAMES'}
-        description={query ? `Find games related to "${query}". Search through our collection of free online games.` : 'Search for your favorite free online games. Find action, puzzle, adventure and more games.'}
-        canonical={`https://worldguessr.pro/search${query ? `?q=${encodeURIComponent(query)}` : ''}`}
-      />
       {/* Header */}
       <Header />
       

@@ -9,16 +9,10 @@ import { Shield, Lock, Eye, Database } from "lucide-react"
 import AdSlot from "@/components/SafeAdSlot"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
-import DynamicSEO from '@/components/DynamicSEO'
 
 export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen bg-white">
-      <DynamicSEO 
-        title="Privacy Policy - GAMES"
-        description="Read our privacy policy to understand how we protect your data and respect your privacy while gaming."
-        canonical="https://worldguessr.pro/privacy"
-      />
       {/* Header */}
       <Header />
 

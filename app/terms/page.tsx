@@ -9,16 +9,10 @@ import { FileText, Shield, AlertCircle, CheckCircle } from "lucide-react"
 import AdSlot from "@/components/SafeAdSlot"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
-import DynamicSEO from '@/components/DynamicSEO'
 
 export default function TermsOfServicePage() {
   return (
     <div className="min-h-screen bg-white">
-      <DynamicSEO 
-        title="Terms of Service - GAMES"
-        description="Read our terms of service and user agreement. Understand the rules and guidelines for using our gaming platform."
-        canonical="https://worldguessr.pro/terms"
-      />
       {/* Header */}
       <Header />
 

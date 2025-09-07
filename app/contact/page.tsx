@@ -11,7 +11,6 @@ import { Mail, MessageCircle, Phone, MapPin, Send, CheckCircle } from "lucide-re
 import AdSlot from "@/components/SafeAdSlot"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
-import DynamicSEO from '@/components/DynamicSEO'
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -67,11 +66,6 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <DynamicSEO 
-        title="Contact Us - GAMES"
-        description="Get in touch with us. Contact our support team for questions, feedback or technical assistance."
-        canonical="https://worldguessr.pro/contact"
-      />
       {/* Header */}
       <Header />
 
