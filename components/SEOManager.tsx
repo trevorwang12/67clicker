@@ -12,10 +12,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Globe, Search, Eye, Code, Smartphone, Settings, Link } from "lucide-react"
+import { Globe, Search, Eye, Code, Smartphone, Settings, Link, Download, Upload, RefreshCw, Copy } from "lucide-react"
 import { seoManager, type SEOSettings, type GamePageSEO, type CategoryPageSEO } from "@/lib/seo-manager"
 import ImageUploader from "@/components/ImageUploader"
 import CanonicalChecker from "@/components/admin/CanonicalChecker"
+import { getCurrentSiteConfig, DEFAULT_SITE_CONFIG, RULE34DLE_CONFIG } from '@/config/default-settings'
 
 export default function SEOManager() {
   const [seoSettings, setSEOSettings] = useState<SEOSettings | null>(null)
@@ -28,6 +29,9 @@ export default function SEOManager() {
   const [seoFormData, setSEOFormData] = useState<Partial<SEOSettings>>({})
   const [gamePageFormData, setGamePageFormData] = useState<Partial<GamePageSEO>>({})
   const [categoryPageFormData, setCategoryPageFormData] = useState<Partial<CategoryPageSEO>>({})
+  
+  // Site Config Template states
+  const [activeTemplate, setActiveTemplate] = useState<'current' | 'default' | 'rule34dle'>('current')
 
   useEffect(() => {
     loadSEOData()
@@ -50,6 +54,39 @@ export default function SEOManager() {
   const showAlert = (type: 'success' | 'error', message: string) => {
     setAlert({type, message})
     setTimeout(() => setAlert(null), 3000)
+  }
+
+  // Load template configurations for basic site info
+  const loadTemplate = (template: 'current' | 'default' | 'rule34dle') => {
+    if (template === 'current' && seoSettings) {
+      setActiveTemplate('current')
+      showAlert('success', 'Current settings loaded')
+      return
+    }
+    
+    const templateConfig = template === 'default' ? DEFAULT_SITE_CONFIG : RULE34DLE_CONFIG
+    
+    // Update form data with template values
+    setSEOFormData(prev => ({
+      ...prev,
+      siteName: templateConfig.siteName,
+      siteDescription: templateConfig.siteDescription,
+      siteUrl: templateConfig.siteUrl,
+      author: templateConfig.author,
+      twitterHandle: templateConfig.twitterHandle,
+      siteLogo: templateConfig.siteLogo,
+      favicon: templateConfig.favicon,
+      keywords: templateConfig.keywords,
+      metaTags: {
+        ...prev.metaTags,
+        themeColor: templateConfig.metaTags.themeColor,
+        appleMobileWebAppTitle: templateConfig.metaTags.appleMobileWebAppTitle,
+        appleMobileWebAppCapable: templateConfig.metaTags.appleMobileWebAppCapable
+      }
+    }))
+    
+    setActiveTemplate(template)
+    showAlert('success', `${template === 'default' ? 'Generic' : 'Rule34dle'} template loaded. Save to apply changes.`)
   }
 
   const handleSEOSubmit = async () => {
@@ -175,8 +212,9 @@ export default function SEOManager() {
       )}
 
       <Tabs defaultValue="general" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-8">
           <TabsTrigger value="general">General SEO</TabsTrigger>
+          <TabsTrigger value="templates">Site Templates</TabsTrigger>
           <TabsTrigger value="canonical">Canonical URLs</TabsTrigger>
           <TabsTrigger value="meta">Meta Tags</TabsTrigger>
           <TabsTrigger value="headings">Headings (H1-H3)</TabsTrigger>
@@ -312,6 +350,109 @@ export default function SEOManager() {
                 <Button onClick={handleSEOSubmit} disabled={isLoading}>
                   {isLoading ? 'Saving...' : 'Save General SEO Settings'}
                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="templates" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                Site Configuration Templates
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className={`cursor-pointer transition-all ${activeTemplate === 'current' ? 'ring-2 ring-blue-500' : 'hover:shadow-md'}`}
+                      onClick={() => loadTemplate('current')}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <span>Current Settings</span>
+                      {activeTemplate === 'current' && <Badge variant="default">Active</Badge>}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-gray-600">
+                      Use your current SEO configuration as the base template.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className={`cursor-pointer transition-all ${activeTemplate === 'default' ? 'ring-2 ring-blue-500' : 'hover:shadow-md'}`}
+                      onClick={() => loadTemplate('default')}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <span>Generic Template</span>
+                      {activeTemplate === 'default' && <Badge variant="default">Active</Badge>}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-gray-600">
+                      Generic gaming site configuration suitable for any gaming platform.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className={`cursor-pointer transition-all ${activeTemplate === 'rule34dle' ? 'ring-2 ring-blue-500' : 'hover:shadow-md'}`}
+                      onClick={() => loadTemplate('rule34dle')}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <span>Rule34dle Template</span>
+                      {activeTemplate === 'rule34dle' && <Badge variant="default">Active</Badge>}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-gray-600">
+                      Pre-configured settings optimized for Rule34dle brand.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Template Preview</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <Label className="text-sm font-medium">Site Name</Label>
+                    <p className="text-sm">{seoFormData.siteName || 'Not set'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Author</Label>
+                    <p className="text-sm">{seoFormData.author || 'Not set'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Site URL</Label>
+                    <p className="text-sm">{seoFormData.siteUrl || 'Not set'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Twitter Handle</Label>
+                    <p className="text-sm">{seoFormData.twitterHandle || 'Not set'}</p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-sm font-medium">Description</Label>
+                    <p className="text-sm">{seoFormData.siteDescription || 'Not set'}</p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-sm font-medium">Keywords</Label>
+                    <p className="text-sm">{seoFormData.keywords?.join(', ') || 'Not set'}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <p className="text-sm text-gray-500">
+                  Templates update the basic site information in the General SEO tab. Save changes there to apply.
+                </p>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => loadTemplate('current')}>
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Reset to Current
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

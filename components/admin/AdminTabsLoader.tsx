@@ -54,12 +54,6 @@ const BackupManager = lazy(() =>
     return { default: () => <div>Failed to load Backup Manager</div> }
   })
 )
-const SiteConfigManager = lazy(() => 
-  import("./SiteConfigManager").catch(err => {
-    console.error('Failed to load SiteConfigManager:', err)
-    return { default: () => <div>Failed to load Site Config Manager</div> }
-  })
-)
 
 // 加载组件
 const LoadingCard = ({ title }: { title: string }) => (
@@ -79,16 +73,15 @@ const LoadingCard = ({ title }: { title: string }) => (
 export default function AdminTabsLoader() {
   return (
     <Tabs defaultValue="games" className="space-y-6">
-      <TabsList className="grid w-full grid-cols-9">
+      <TabsList className="grid w-full grid-cols-8">
         <TabsTrigger value="games">Games</TabsTrigger>
         <TabsTrigger value="featured">Featured</TabsTrigger>
         <TabsTrigger value="ads">Ads</TabsTrigger>
         <TabsTrigger value="recommendations">AI Recommendations</TabsTrigger>
         <TabsTrigger value="homepage">Homepage</TabsTrigger>
-        <TabsTrigger value="seo">SEO</TabsTrigger>
+        <TabsTrigger value="seo">SEO & Config</TabsTrigger>
         <TabsTrigger value="contact">Contact</TabsTrigger>
         <TabsTrigger value="backup">Backup</TabsTrigger>
-        <TabsTrigger value="config">Site Config</TabsTrigger>
       </TabsList>
       
       <TabsContent value="games">
@@ -136,12 +129,6 @@ export default function AdminTabsLoader() {
       <TabsContent value="backup">
         <Suspense fallback={<LoadingCard title="Backup Manager" />}>
           <BackupManager />
-        </Suspense>
-      </TabsContent>
-      
-      <TabsContent value="config">
-        <Suspense fallback={<LoadingCard title="Site Configuration Manager" />}>
-          <SiteConfigManager />
         </Suspense>
       </TabsContent>
     </Tabs>
