@@ -22,6 +22,7 @@ import FriendlyLinks from '@/components/FriendlyLinks'
 
 export default function HomePage() {
   const [featuredGame, setFeaturedGame] = useState<any>(null)
+  const [featuredGameDataLoading, setFeaturedGameDataLoading] = useState(true)
   const [isPlayingFeatured, setIsPlayingFeatured] = useState(false)
   const [featuredGameLoading, setFeaturedGameLoading] = useState(false)
   const [hotGames, setHotGames] = useState<any[]>([])
@@ -113,8 +114,15 @@ export default function HomePage() {
     setIsClient(true)
     
     const loadFeaturedGame = async () => {
-      const activeFeaturedGame = await featuredGamesManager.getActiveFeaturedGame()
-      setFeaturedGame(activeFeaturedGame)
+      try {
+        const activeFeaturedGame = await featuredGamesManager.getActiveFeaturedGame()
+        setFeaturedGame(activeFeaturedGame)
+      } catch (error) {
+        console.error('Failed to load featured game:', error)
+        setFeaturedGame(null)
+      } finally {
+        setFeaturedGameDataLoading(false)
+      }
     }
 
     const loadSEOData = async () => {
@@ -150,6 +158,7 @@ export default function HomePage() {
     
     // 监听featured games更新事件
     const handleFeaturedGamesUpdate = async () => {
+      setFeaturedGameDataLoading(true)
       await loadFeaturedGame()
     }
     
@@ -228,7 +237,38 @@ export default function HomePage() {
           <div className="flex-1">
             {/* Featured Game */}
             <div className="mb-8">
-              {featuredGame ? (
+              {featuredGameDataLoading ? (
+                <div className="bg-gradient-to-r from-orange-400 to-pink-500 rounded-lg text-white h-[600px] flex items-center justify-center relative overflow-hidden">
+                  {/* Background Elements */}
+                  <div className="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full opacity-30 animate-bounce"></div>
+                  <div className="absolute top-32 right-20 w-24 h-24 bg-white/20 rounded-full opacity-40 animate-pulse"></div>
+                  <div className="absolute bottom-20 left-32 w-28 h-28 bg-white/15 rounded-full opacity-30 animate-ping"></div>
+                  
+                  <div className="relative z-10 text-center">
+                    <div className="relative mb-6">
+                      <div className="w-20 h-20 mx-auto relative">
+                        <div className="absolute inset-0 border-4 border-white/30 rounded-full"></div>
+                        <div className="absolute inset-0 border-4 border-transparent border-t-white rounded-full animate-spin"></div>
+                        <div className="absolute inset-3 bg-white/20 rounded-full animate-pulse flex items-center justify-center">
+                          <Gamepad2 className="w-8 h-8 text-white animate-bounce" />
+                        </div>
+                      </div>
+                      <div className="flex justify-center mt-6 space-x-1">
+                        <div className="w-3 h-3 bg-white rounded-full animate-bounce"></div>
+                        <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <h2 className="text-3xl font-bold animate-pulse">Loading Featured Game...</h2>
+                      <p className="text-white/90 text-lg animate-pulse">Discovering amazing games for you!</p>
+                      <div className="w-80 mx-auto bg-white/20 rounded-full h-3 mt-6">
+                        <div className="bg-white h-3 rounded-full animate-pulse w-3/4"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : featuredGame ? (
                 <>
                   {/* Featured Game Player or Preview */}
                   {isPlayingFeatured && featuredGame.gameUrl ? (
@@ -352,10 +392,10 @@ export default function HomePage() {
                     🎮
                   </div>
                   <h2 className="text-3xl font-bold mb-2">FEATURED GAME</h2>
-                  <p className="mb-4 opacity-90">Configure a featured game in the admin panel to display here!</p>
+                  <p className="mb-4 opacity-90">New featured games coming soon! Check back later for exciting updates!</p>
                   <Button className="bg-white text-orange-500 hover:bg-gray-100 px-6 py-2 font-semibold" disabled>
                     <Play className="w-4 h-4 mr-2" />
-                    NO GAME CONFIGURED
+                    COMING SOON
                   </Button>
                 </div>
               )}
