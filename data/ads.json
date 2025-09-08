@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "name": "native banner",
+    "htmlContent": "<script async=\"async\" data-cfasync=\"false\" src=\"//pl27597923.revenuecpmgate.com/c2ceb5954968233b4407352e23b71163/invoke.js\"></script>\n<div id=\"container-c2ceb5954968233b4407352e23b71163\"></div>",
+    "position": "header",
+    "isActive": true,
+    "id": "ad_1757294826859_1n3tbsuzx",
+    "createdAt": "2025-09-08T01:27:06.859Z",
+    "updatedAt": "2025-09-08T01:27:06.859Z"
+  },
+  {
+    "name": "social bar",
+    "htmlContent": "<script type='text/javascript' src='//pl27597927.revenuecpmgate.com/4b/8e/07/4b8e07f99140157a561fbcb11ebd08c9.js'></script>",
+    "position": "sidebar",
+    "isActive": true,
+    "id": "ad_1757294974878_bevodgx9m",
+    "createdAt": "2025-09-08T01:29:34.878Z",
+    "updatedAt": "2025-09-08T01:29:34.878Z"
+  }
+]
