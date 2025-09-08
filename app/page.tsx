@@ -294,19 +294,55 @@ export default function HomePage() {
                       </div>
                     </div>
                   ) : (
-                    <div className={`bg-gradient-to-r ${featuredGame.gradient || 'from-orange-400 to-pink-500'} rounded-lg text-white h-[600px] flex flex-col items-center justify-center text-center`}>
-                      <div className="w-20 h-20 bg-white/20 rounded-xl mb-6 flex items-center justify-center text-3xl">
-                        {featuredGame.emoji}
+                    <div className={`bg-gradient-to-r ${featuredGame.gradient || 'from-orange-400 to-pink-500'} rounded-lg text-white h-[600px] flex items-center justify-center text-center relative overflow-hidden`}>
+                      {/* Background thumbnail if available */}
+                      {featuredGame.thumbnailUrl && (
+                        <div className="absolute inset-0 opacity-20">
+                          <img 
+                            src={featuredGame.thumbnailUrl} 
+                            alt={featuredGame.name}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
+                      
+                      <div className="relative z-10 flex items-center gap-8 max-w-6xl px-8">
+                        {/* Left side - Game info */}
+                        <div className="flex-1 max-w-2xl">
+                          {/* Only show emoji if no thumbnail */}
+                          {!featuredGame.thumbnailUrl && (
+                            <div className="w-20 h-20 bg-white/20 rounded-xl mb-6 flex items-center justify-center text-3xl mx-auto">
+                              {featuredGame.emoji}
+                            </div>
+                          )}
+                          <h2 className="text-4xl font-bold mb-4">{featuredGame.name}</h2>
+                          <p className="mb-8 opacity-90 text-lg">{featuredGame.description}</p>
+                          <div className="flex justify-center">
+                            <Button 
+                              onClick={startFeaturedGame}
+                              className="bg-white text-orange-500 hover:bg-gray-100 px-8 py-3 font-semibold text-lg shadow-lg hover:shadow-xl transition-shadow whitespace-nowrap"
+                            >
+                              <Play className="w-5 h-5 mr-2 flex-shrink-0" />
+                              PLAY NOW
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {/* Right side - Thumbnail if available */}
+                        {featuredGame.thumbnailUrl && (
+                          <div className="hidden lg:block flex-shrink-0">
+                            <div className="w-72 h-48 bg-white/10 rounded-2xl overflow-hidden backdrop-blur-sm border border-white/20 shadow-2xl">
+                              <img 
+                                src={featuredGame.thumbnailUrl} 
+                                alt={featuredGame.name}
+                                className="w-full h-full object-cover"
+                                loading="eager"
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <h2 className="text-4xl font-bold mb-4 max-w-md">{featuredGame.name}</h2>
-                      <p className="mb-8 opacity-90 text-lg max-w-lg px-4">{featuredGame.description}</p>
-                      <Button 
-                        onClick={startFeaturedGame}
-                        className="bg-white text-orange-500 hover:bg-gray-100 px-8 py-3 font-semibold text-lg shadow-lg hover:shadow-xl transition-shadow"
-                      >
-                        <Play className="w-5 h-5 mr-2" />
-                        PLAY NOW
-                      </Button>
                     </div>
                   )}
                 </>

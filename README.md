@@ -1,8 +1,8 @@
-# Gaming Website Template | 游戏网站模板
+# Clashle - Clash Royale Word Puzzle Game
 
-A modern, secure, and performant gaming website template built with Next.js 15 that supports iframe-based games for rapid site deployment.
+A modern, secure, and performant word puzzle game built with Next.js 15, where players guess Clash Royale card names in 5 tries.
 
-基于 Next.js 15 构建的现代化、安全、高性能游戏网站模板，支持 iframe 游戏快速部署建站。
+基于 Next.js 15 构建的现代化、安全、高性能文字谜题游戏，玩家需要在5次尝试内猜出皇室战争卡牌名称。
 
 ## 🔄 Recent Architecture Overhaul | 近期架构大重构
 
@@ -31,16 +31,16 @@ A modern, secure, and performant gaming website template built with Next.js 15 t
 
 ## 🚀 Features | 功能特色
 
-### Core Features | 核心功能
-- **Iframe Game Support | Iframe 游戏支持**: Play games directly on your site with fullscreen, pause, mute controls | 在网站上直接游玩游戏，支持全屏、暂停、静音控制
-- **Configuration System | 配置系统**: Easy customization through JSON configuration files | 通过 JSON 配置文件轻松自定义
-- **Responsive Design | 响应式设计**: Mobile-first design that works on all devices | 移动优先设计，适配所有设备
-- **Game Management | 游戏管理**: Admin panel for adding, editing, and managing games with categorized tabs | 管理面板用于添加、编辑和管理游戏，支持分类标签
-- **Search & Filtering | 搜索过滤**: Advanced game search and category filtering on all pages | 所有页面支持高级游戏搜索和分类过滤
-- **Smart Recommendations | 智能推荐**: "You might also like" section with configurable game recommendations | "您可能还喜欢"部分支持可配置的游戏推荐
-- **Advertisement System | 广告系统**: Comprehensive ad slot management with 8 strategic positions | 全面的广告位管理系统，支持8个战略位置
-- **Featured Games | 特色游戏**: Configurable hero section with featured game showcase | 可配置的特色游戏展示区域
-- **SEO Management | SEO 管理**: Comprehensive SEO settings with meta tags, structured data, and page templates | 全面的SEO设置，包括meta标签、结构化数据和页面模板
+### Core Game Features | 核心游戏功能
+- **Daily Puzzle | 每日谜题**: New Clash Royale card to guess every day | 每天都有新的皇室战争卡牌等你猜测
+- **5-Try Challenge | 5次挑战**: Players have exactly 5 attempts to guess the correct card | 玩家有且仅有5次机会猜出正确卡牌
+- **Color-Coded Feedback | 颜色反馈**: Green for correct position, yellow for wrong position, gray for not in word | 绿色表示位置正确，黄色表示字母存在但位置错误，灰色表示字母不存在
+- **All Clash Royale Cards | 所有皇室战争卡牌**: Features comprehensive database of Clash Royale card names | 包含全面的皇室战争卡牌名称数据库
+- **Share Results | 分享结果**: Players can share their daily results with friends | 玩家可以与朋友分享每日成果
+- **Responsive Design | 响应式设计**: Perfect gameplay experience on mobile, tablet, and desktop | 在手机、平板和桌面上都有完美的游戏体验
+- **Keyboard Support | 键盘支持**: Full keyboard input support for desktop players | 桌面玩家完整的键盘输入支持
+- **Progress Tracking | 进度追踪**: Track your daily streak and success rate | 追踪你的连续答题天数和成功率
+- **Hint System | 提示系统**: Subtle hints about card rarity, elixir cost, or type | 关于卡牌稀有度、圣水消耗或类型的微妙提示
 
 ### Technical Features | 技术特色
 

@@ -16,7 +16,7 @@ import { Globe, Search, Eye, Code, Smartphone, Settings, Link, Download, Upload,
 import { seoManager, type SEOSettings, type GamePageSEO, type CategoryPageSEO } from "@/lib/seo-manager"
 import ImageUploader from "@/components/ImageUploader"
 import CanonicalChecker from "@/components/admin/CanonicalChecker"
-import { getCurrentSiteConfig, DEFAULT_SITE_CONFIG, RULE34DLE_CONFIG } from '@/config/default-settings'
+import { getCurrentSiteConfig, DEFAULT_SITE_CONFIG } from '@/config/default-settings'
 
 export default function SEOManager() {
   const [seoSettings, setSEOSettings] = useState<SEOSettings | null>(null)
@@ -31,7 +31,7 @@ export default function SEOManager() {
   const [categoryPageFormData, setCategoryPageFormData] = useState<Partial<CategoryPageSEO>>({})
   
   // Site Config Template states
-  const [activeTemplate, setActiveTemplate] = useState<'current' | 'default' | 'rule34dle'>('current')
+  const [activeTemplate, setActiveTemplate] = useState<'current' | 'default'>('current')
 
   useEffect(() => {
     loadSEOData()
@@ -57,14 +57,14 @@ export default function SEOManager() {
   }
 
   // Load template configurations for basic site info
-  const loadTemplate = (template: 'current' | 'default' | 'rule34dle') => {
+  const loadTemplate = (template: 'current' | 'default') => {
     if (template === 'current' && seoSettings) {
       setActiveTemplate('current')
       showAlert('success', 'Current settings loaded')
       return
     }
     
-    const templateConfig = template === 'default' ? DEFAULT_SITE_CONFIG : RULE34DLE_CONFIG
+    const templateConfig = DEFAULT_SITE_CONFIG
     
     // Update form data with template values
     setSEOFormData(prev => ({
@@ -86,7 +86,7 @@ export default function SEOManager() {
     }))
     
     setActiveTemplate(template)
-    showAlert('success', `${template === 'default' ? 'Generic' : 'Rule34dle'} template loaded. Save to apply changes.`)
+    showAlert('success', 'Generic template loaded. Save to apply changes.')
   }
 
   const handleSEOSubmit = async () => {
@@ -212,9 +212,8 @@ export default function SEOManager() {
       )}
 
       <Tabs defaultValue="general" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-8">
-          <TabsTrigger value="general">General SEO</TabsTrigger>
-          <TabsTrigger value="templates">Site Templates</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-7">
+          <TabsTrigger value="general">Site Configuration</TabsTrigger>
           <TabsTrigger value="canonical">Canonical URLs</TabsTrigger>
           <TabsTrigger value="meta">Meta Tags</TabsTrigger>
           <TabsTrigger value="headings">Headings (H1-H3)</TabsTrigger>
@@ -227,236 +226,266 @@ export default function SEOManager() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Globe className="w-5 h-5" />
-                General SEO Settings
+                <Settings className="w-5 h-5" />
+                Site Configuration & Templates
               </CardTitle>
+              <p className="text-sm text-gray-600">
+                Manage your site's basic information, SEO settings, and configuration templates
+              </p>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="siteName">Site Name *</Label>
-                  <Input
-                    id="siteName"
-                    value={seoFormData.siteName || ''}
-                    onChange={(e) => setSEOFormData(prev => ({ ...prev, siteName: e.target.value }))}
-                    placeholder="Your Gaming Site"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="author">Author</Label>
-                  <Input
-                    id="author"
-                    value={seoFormData.author || ''}
-                    onChange={(e) => setSEOFormData(prev => ({ ...prev, author: e.target.value }))}
-                    placeholder="Gaming Platform Team"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <Label htmlFor="siteDescription">Site Description *</Label>
-                <Textarea
-                  id="siteDescription"
-                  value={seoFormData.siteDescription || ''}
-                  onChange={(e) => setSEOFormData(prev => ({ ...prev, siteDescription: e.target.value }))}
-                  placeholder="Best online gaming platform with hundreds of free games..."
-                  rows={3}
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Recommended: 150-160 characters. Current: {seoFormData.siteDescription?.length || 0}
-                </p>
-              </div>
+            <CardContent className="space-y-6">
+              {/* Configuration Templates */}
+              <div className="space-y-4">
+                <Label className="text-base font-semibold">Configuration Templates</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className={`cursor-pointer transition-all ${activeTemplate === 'current' ? 'ring-2 ring-blue-500' : 'hover:shadow-md'}`}
+                        onClick={() => loadTemplate('current')}>
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between text-sm">
+                        <span>Current Settings</span>
+                        {activeTemplate === 'current' && <Badge variant="default">Active</Badge>}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-3 pt-0">
+                      <p className="text-xs text-gray-600">
+                        Use your current configuration as the base template.
+                      </p>
+                    </CardContent>
+                  </Card>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="siteUrl">Site URL *</Label>
-                  <Input
-                    id="siteUrl"
-                    value={seoFormData.siteUrl || ''}
-                    onChange={(e) => setSEOFormData(prev => ({ ...prev, siteUrl: e.target.value }))}
-                    placeholder="https://yourgamesite.com"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="canonicalUrl">Canonical URL</Label>
-                  <Input
-                    id="canonicalUrl"
-                    value={seoFormData.canonicalUrl || ''}
-                    onChange={(e) => setSEOFormData(prev => ({ ...prev, canonicalUrl: e.target.value }))}
-                    placeholder="https://yourgamesite.com"
-                  />
+                  <Card className={`cursor-pointer transition-all ${activeTemplate === 'default' ? 'ring-2 ring-blue-500' : 'hover:shadow-md'}`}
+                        onClick={() => loadTemplate('default')}>
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between text-sm">
+                        <span>Generic Template</span>
+                        {activeTemplate === 'default' && <Badge variant="default">Loaded</Badge>}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-3 pt-0">
+                      <p className="text-xs text-gray-600">
+                        Generic gaming site configuration suitable for any platform.
+                      </p>
+                    </CardContent>
+                  </Card>
+
                 </div>
               </div>
 
-              <div>
-                <Label htmlFor="keywords">Keywords *</Label>
-                <Input
-                  id="keywords"
-                  value={seoFormData.keywords?.join(', ') || ''}
-                  onChange={(e) => handleKeywordsChange(e.target.value)}
-                  placeholder="online games, browser games, free games, HTML5 games"
-                />
-                <p className="text-xs text-gray-500 mt-1">Separate keywords with commas</p>
+              <Separator />
+
+              {/* Basic Site Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Globe className="w-4 h-4" />
+                  Basic Site Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="siteName">Site Name *</Label>
+                    <Input
+                      id="siteName"
+                      value={seoFormData.siteName || ''}
+                      onChange={(e) => setSEOFormData(prev => ({ ...prev, siteName: e.target.value }))}
+                      placeholder="Your Gaming Site"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="author">Author</Label>
+                    <Input
+                      id="author"
+                      value={seoFormData.author || ''}
+                      onChange={(e) => setSEOFormData(prev => ({ ...prev, author: e.target.value }))}
+                      placeholder="Gaming Platform Team"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="siteDescription">Site Description *</Label>
+                  <Textarea
+                    id="siteDescription"
+                    value={seoFormData.siteDescription || ''}
+                    onChange={(e) => setSEOFormData(prev => ({ ...prev, siteDescription: e.target.value }))}
+                    placeholder="Best online gaming platform with hundreds of free games..."
+                    rows={3}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Recommended: 150-160 characters. Current: {seoFormData.siteDescription?.length || 0}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="siteUrl">Site URL *</Label>
+                    <Input
+                      id="siteUrl"
+                      value={seoFormData.siteUrl || ''}
+                      onChange={(e) => setSEOFormData(prev => ({ ...prev, siteUrl: e.target.value }))}
+                      placeholder="https://yourgamesite.com"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="canonicalUrl">Canonical URL</Label>
+                    <Input
+                      id="canonicalUrl"
+                      value={seoFormData.canonicalUrl || ''}
+                      onChange={(e) => setSEOFormData(prev => ({ ...prev, canonicalUrl: e.target.value }))}
+                      placeholder="https://yourgamesite.com"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="twitterHandle">Twitter Handle</Label>
+                    <Input
+                      id="twitterHandle"
+                      value={seoFormData.twitterHandle || ''}
+                      onChange={(e) => setSEOFormData(prev => ({ ...prev, twitterHandle: e.target.value }))}
+                      placeholder="@yourgames"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="backupPrefix">Backup Prefix</Label>
+                    <Input
+                      id="backupPrefix"
+                      value={seoFormData.backupPrefix || ''}
+                      onChange={(e) => setSEOFormData(prev => ({ ...prev, backupPrefix: e.target.value }))}
+                      placeholder="gaming-site"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="keywords">Keywords *</Label>
+                  <Input
+                    id="keywords"
+                    value={seoFormData.keywords?.join(', ') || ''}
+                    onChange={(e) => handleKeywordsChange(e.target.value)}
+                    placeholder="online games, browser games, free games, HTML5 games"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Separate keywords with commas</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <ImageUploader
+                      label="Site Logo"
+                      value={seoFormData.siteLogo || ''}
+                      onChange={(url) => setSEOFormData(prev => ({ ...prev, siteLogo: url }))}
+                      placeholder="Upload site logo or enter URL"
+                      accept="image/*"
+                      helperText="Recommended: PNG or SVG, 200x50px"
+                    />
+                  </div>
+                  <div>
+                    <ImageUploader
+                      label="Favicon"
+                      value={seoFormData.favicon || ''}
+                      onChange={(url) => setSEOFormData(prev => ({ ...prev, favicon: url }))}
+                      placeholder="Upload favicon or enter URL"
+                      accept="image/x-icon,image/png,image/svg+xml"
+                      helperText="Recommended: ICO or PNG, 16x16px or 32x32px"
+                    />
+                  </div>
+                  <div>
+                    <ImageUploader
+                      label="Open Graph Image"
+                      value={seoFormData.ogImage || ''}
+                      onChange={(url) => setSEOFormData(prev => ({ ...prev, ogImage: url }))}
+                      placeholder="Upload OG image or enter URL"
+                      accept="image/*"
+                      helperText="Recommended: PNG or JPG, 1200x630px"
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <ImageUploader
-                    label="Site Logo"
-                    value={seoFormData.siteLogo || ''}
-                    onChange={(url) => setSEOFormData(prev => ({ ...prev, siteLogo: url }))}
-                    placeholder="Upload site logo or enter URL"
-                    accept="image/*"
-                    helperText="Recommended: PNG or SVG, 200x50px"
-                  />
+              <Separator />
+
+              {/* Technical Settings */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Technical Settings</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="titleSuffix">Title Suffix</Label>
+                    <Input
+                      id="titleSuffix"
+                      value={seoFormData.titleSuffix || ''}
+                      onChange={(e) => setSEOFormData(prev => ({ ...prev, titleSuffix: e.target.value }))}
+                      placeholder="GAMES"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="themeColor">Theme Color</Label>
+                    <Input
+                      id="themeColor"
+                      value={seoFormData.metaTags?.themeColor || ''}
+                      onChange={(e) => setSEOFormData(prev => ({
+                        ...prev,
+                        metaTags: { ...prev.metaTags, themeColor: e.target.value }
+                      }))}
+                      placeholder="#475569"
+                    />
+                  </div>
                 </div>
+
                 <div>
-                  <ImageUploader
-                    label="Favicon"
-                    value={seoFormData.favicon || ''}
-                    onChange={(url) => setSEOFormData(prev => ({ ...prev, favicon: url }))}
-                    placeholder="Upload favicon or enter URL"
-                    accept="image/x-icon,image/png,image/svg+xml"
-                    helperText="Recommended: ICO or PNG, 16x16px or 32x32px"
-                  />
-                </div>
-                <div>
-                  <ImageUploader
-                    label="Open Graph Image"
-                    value={seoFormData.ogImage || ''}
-                    onChange={(url) => setSEOFormData(prev => ({ ...prev, ogImage: url }))}
-                    placeholder="Upload OG image or enter URL"
-                    accept="image/*"
-                    helperText="Recommended: PNG or JPG, 1200x630px"
+                  <Label htmlFor="robotsTxt">Robots.txt Content</Label>
+                  <Textarea
+                    id="robotsTxt"
+                    value={seoFormData.robotsTxt || ''}
+                    onChange={(e) => setSEOFormData(prev => ({ ...prev, robotsTxt: e.target.value }))}
+                    placeholder="User-agent: *&#10;Allow: /&#10;Disallow: /admin/"
+                    rows={6}
+                    className="font-mono text-sm"
                   />
                 </div>
               </div>
 
               <Separator />
 
-              <div>
-                <Label htmlFor="robotsTxt">Robots.txt Content</Label>
-                <Textarea
-                  id="robotsTxt"
-                  value={seoFormData.robotsTxt || ''}
-                  onChange={(e) => setSEOFormData(prev => ({ ...prev, robotsTxt: e.target.value }))}
-                  placeholder="User-agent: *&#10;Allow: /&#10;Disallow: /admin/"
-                  rows={6}
-                  className="font-mono text-sm"
-                />
-              </div>
-
-              <div className="flex justify-end">
+              {/* Export/Import Actions */}
+              <div className="flex justify-between items-center">
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => {
+                    if (!seoFormData) return
+                    const configJson = JSON.stringify(seoFormData, null, 2)
+                    const blob = new Blob([configJson], { type: 'application/json' })
+                    const url = URL.createObjectURL(blob)
+                    const a = document.createElement('a')
+                    a.href = url
+                    a.download = `${seoFormData.backupPrefix || 'site'}-config-${new Date().toISOString().split('T')[0]}.json`
+                    document.body.appendChild(a)
+                    a.click()
+                    document.body.removeChild(a)
+                    URL.revokeObjectURL(url)
+                    showAlert('success', 'Configuration exported successfully!')
+                  }}>
+                    <Download className="w-4 h-4 mr-2" />
+                    Export
+                  </Button>
+                  <Button variant="outline" onClick={() => {
+                    if (!seoFormData) return
+                    const configJson = JSON.stringify(seoFormData, null, 2)
+                    navigator.clipboard.writeText(configJson).then(() => {
+                      showAlert('success', 'Configuration copied to clipboard!')
+                    }).catch(() => {
+                      showAlert('error', 'Failed to copy configuration')
+                    })
+                  }}>
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy
+                  </Button>
+                </div>
                 <Button onClick={handleSEOSubmit} disabled={isLoading}>
-                  {isLoading ? 'Saving...' : 'Save General SEO Settings'}
+                  {isLoading ? 'Saving...' : 'Save Site Configuration'}
                 </Button>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="templates" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="w-5 h-5" />
-                Site Configuration Templates
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className={`cursor-pointer transition-all ${activeTemplate === 'current' ? 'ring-2 ring-blue-500' : 'hover:shadow-md'}`}
-                      onClick={() => loadTemplate('current')}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      <span>Current Settings</span>
-                      {activeTemplate === 'current' && <Badge variant="default">Active</Badge>}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-600">
-                      Use your current SEO configuration as the base template.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className={`cursor-pointer transition-all ${activeTemplate === 'default' ? 'ring-2 ring-blue-500' : 'hover:shadow-md'}`}
-                      onClick={() => loadTemplate('default')}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      <span>Generic Template</span>
-                      {activeTemplate === 'default' && <Badge variant="default">Active</Badge>}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-600">
-                      Generic gaming site configuration suitable for any gaming platform.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className={`cursor-pointer transition-all ${activeTemplate === 'rule34dle' ? 'ring-2 ring-blue-500' : 'hover:shadow-md'}`}
-                      onClick={() => loadTemplate('rule34dle')}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      <span>Rule34dle Template</span>
-                      {activeTemplate === 'rule34dle' && <Badge variant="default">Active</Badge>}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-600">
-                      Pre-configured settings optimized for Rule34dle brand.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Template Preview</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <Label className="text-sm font-medium">Site Name</Label>
-                    <p className="text-sm">{seoFormData.siteName || 'Not set'}</p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium">Author</Label>
-                    <p className="text-sm">{seoFormData.author || 'Not set'}</p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium">Site URL</Label>
-                    <p className="text-sm">{seoFormData.siteUrl || 'Not set'}</p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium">Twitter Handle</Label>
-                    <p className="text-sm">{seoFormData.twitterHandle || 'Not set'}</p>
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label className="text-sm font-medium">Description</Label>
-                    <p className="text-sm">{seoFormData.siteDescription || 'Not set'}</p>
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label className="text-sm font-medium">Keywords</Label>
-                    <p className="text-sm">{seoFormData.keywords?.join(', ') || 'Not set'}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <p className="text-sm text-gray-500">
-                  Templates update the basic site information in the General SEO tab. Save changes there to apply.
-                </p>
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => loadTemplate('current')}>
-                    <RefreshCw className="w-4 h-4 mr-2" />
-                    Reset to Current
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         <TabsContent value="canonical" className="space-y-6">
           <CanonicalChecker />

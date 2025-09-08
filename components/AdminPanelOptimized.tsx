@@ -71,17 +71,13 @@ const BackupManager = lazy(() =>
   }))
 )
 
+
 const SitemapManager = lazy(() => 
   import("./admin/SitemapManager").catch(() => ({
     default: () => <div className="p-4">Sitemap Manager failed to load. Please refresh.</div>
   }))
 )
 
-const SiteConfigManager = lazy(() => 
-  import("./admin/SiteConfigManager").catch(() => ({
-    default: () => <div className="p-4">Site Config Manager failed to load. Please refresh.</div>
-  }))
-)
 
 
 // 改进的Loading组件
@@ -166,10 +162,9 @@ export default function AdminPanel() {
               <TabsTrigger value="about">About Us</TabsTrigger>
               <TabsTrigger value="contact">Messages</TabsTrigger>
             </TabsList>
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="footer">Footer</TabsTrigger>
               <TabsTrigger value="seo">SEO</TabsTrigger>
-              <TabsTrigger value="site-config">Site Config</TabsTrigger>
               <TabsTrigger value="friendly-links">Friendly Links</TabsTrigger>
               <TabsTrigger value="sitemap">Sitemap</TabsTrigger>
               <TabsTrigger value="backup">Backup</TabsTrigger>
@@ -225,11 +220,6 @@ export default function AdminPanel() {
             </Suspense>
           </TabsContent>
           
-          <TabsContent value="site-config">
-            <Suspense fallback={<LoadingTab title="Site Config Manager" />}>
-              <SiteConfigManager />
-            </Suspense>
-          </TabsContent>
           
           <TabsContent value="friendly-links">
             <Suspense fallback={<LoadingTab title="Friendly Links Manager" />}>

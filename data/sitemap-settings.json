@@ -1,6 +1,6 @@
 {
   "settings": {
-    "baseUrl": "https://rule34dle.net",
+    "baseUrl": "https://clashle.org",
     "defaultChangeFreq": "weekly",
     "defaultPriority": 0.5,
     "includeStaticPages": true,
@@ -14,7 +14,7 @@
     ],
     "autoGenerate": true,
     "generateSitemapIndex": true,
-    "lastGenerated": "2025-09-06T15:18:56.842Z"
+    "lastGenerated": "2025-09-07T15:15:13.437Z"
   },
-  "updatedAt": "2025-09-06T15:18:56.844Z"
+  "updatedAt": "2025-09-07T15:15:13.441Z"
 }

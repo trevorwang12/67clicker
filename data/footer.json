@@ -1,9 +1,9 @@
 {
   "branding": {
     "showLogo": true,
-    "logoText": "rule34dle fan page ",
+    "logoText": "Clashle",
     "logoIcon": "gamepad2",
-    "description": "A Higher or Lower Game",
+    "description": "Discover the story behind the world's most beloved Clash Royale word puzzle game.",
     "customDescription": ""
   },
   "navigation": {
@@ -123,7 +123,7 @@
   },
   "copyright": {
     "isVisible": true,
-    "text": "@{siteName}. rule34dle.net is an independent website. It is not affiliated with any organizations.All rights reserved.",
+    "text": "@{siteName}. clashle.org is an independent website. It is not affiliated with any organizations.All rights reserved.",
     "customText": ""
   },
   "friendlyLinks": {
