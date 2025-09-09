@@ -7,9 +7,28 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Plus, Trash2, ToggleLeft, ToggleRight, ArrowUp, ArrowDown } from "lucide-react"
+import { Plus, Trash2, ToggleLeft, ToggleRight, ArrowUp, ArrowDown, GripVertical } from "lucide-react"
 import { recommendedGamesManager } from '@/lib/recommended-games-manager'
 import { dataManager, GameData } from '@/lib/data-manager'
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable'
+import {
+  CSS,
+} from '@dnd-kit/utilities'
 
 interface RecommendedGame {
   id: string
@@ -17,6 +36,102 @@ interface RecommendedGame {
   priority: number
   isActive: boolean
   addedDate: string
+}
+
+// Sortable Item Component for Recommended Games
+function SortableRecommendedGame({ 
+  recommendation, 
+  game,
+  handleToggleRecommendedGame,
+  handleRemoveRecommendedGame,
+  handleMovePriority
+}: { 
+  recommendation: RecommendedGame,
+  game: GameData,
+  handleToggleRecommendedGame: (id: string) => void,
+  handleRemoveRecommendedGame: (id: string) => void,
+  handleMovePriority: (id: string, direction: 'up' | 'down') => void
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: recommendation.id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+
+  return (
+    <div 
+      ref={setNodeRef} 
+      style={style}
+      className="flex items-center gap-4 p-4 border rounded-lg bg-white"
+    >
+      <div 
+        {...attributes} 
+        {...listeners}
+        className="cursor-grab active:cursor-grabbing p-1 hover:bg-gray-100 rounded"
+      >
+        <GripVertical className="w-4 h-4 text-gray-400" />
+      </div>
+      <img 
+        src={game.thumbnailUrl || '/placeholder.svg'} 
+        alt={game.name}
+        className="w-16 h-16 object-cover rounded"
+      />
+      <div className="flex-1">
+        <h3 className="font-medium">{game.name}</h3>
+        <p className="text-sm text-gray-600">
+          Priority: {recommendation.priority} | Added: {recommendation.addedDate}
+        </p>
+      </div>
+      <div className="flex items-center gap-2">
+        <Badge variant={recommendation.isActive ? "default" : "secondary"}>
+          {recommendation.isActive ? "Active" : "Inactive"}
+        </Badge>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => handleMovePriority(recommendation.id, 'up')}
+          disabled={recommendation.priority === 1}
+        >
+          <ArrowUp className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => handleMovePriority(recommendation.id, 'down')}
+        >
+          <ArrowDown className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => handleToggleRecommendedGame(recommendation.id)}
+        >
+          {recommendation.isActive ? (
+            <ToggleRight className="w-4 h-4 text-green-600" />
+          ) : (
+            <ToggleLeft className="w-4 h-4 text-gray-400" />
+          )}
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => handleRemoveRecommendedGame(recommendation.id)}
+          className="text-red-600 hover:text-red-700"
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </div>
+    </div>
+  )
 }
 
 export default function RecommendedGamesManager() {
@@ -27,6 +142,18 @@ export default function RecommendedGamesManager() {
   const [selectedGameId, setSelectedGameId] = useState<string>('')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [alert, setAlert] = useState<{type: 'success' | 'error', message: string} | null>(null)
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
   useEffect(() => {
     loadData()
@@ -70,8 +197,8 @@ export default function RecommendedGamesManager() {
     }
   }
 
-  const handleRemoveRecommendedGame = (recommendationId: string) => {
-    const success = recommendedGamesManager.removeRecommendedGame(recommendationId)
+  const handleRemoveRecommendedGame = async (recommendationId: string) => {
+    const success = await recommendedGamesManager.removeRecommendedGame(recommendationId)
     if (success) {
       showAlert('success', 'Game removed from recommendations')
       loadData()
@@ -80,8 +207,8 @@ export default function RecommendedGamesManager() {
     }
   }
 
-  const handleToggleRecommendedGame = (recommendationId: string) => {
-    const success = recommendedGamesManager.toggleRecommendedGame(recommendationId)
+  const handleToggleRecommendedGame = async (recommendationId: string) => {
+    const success = await recommendedGamesManager.toggleRecommendedGame(recommendationId)
     if (success) {
       showAlert('success', 'Recommendation status updated')
       loadData()
@@ -90,7 +217,7 @@ export default function RecommendedGamesManager() {
     }
   }
 
-  const handleMovePriority = (recommendationId: string, direction: 'up' | 'down') => {
+  const handleMovePriority = async (recommendationId: string, direction: 'up' | 'down') => {
     const currentRecommendation = recommendedGames.find(rec => rec.id === recommendationId)
     if (!currentRecommendation) return
 
@@ -98,12 +225,40 @@ export default function RecommendedGamesManager() {
       ? Math.max(1, currentRecommendation.priority - 1)
       : currentRecommendation.priority + 1
 
-    const success = recommendedGamesManager.updateRecommendedGame(recommendationId, { priority: newPriority })
+    const success = await recommendedGamesManager.updateRecommendedGame(recommendationId, { priority: newPriority })
     if (success) {
       showAlert('success', 'Priority updated')
       loadData()
     } else {
       showAlert('error', 'Failed to update priority')
+    }
+  }
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event
+
+    if (!over || active.id === over.id) {
+      return
+    }
+
+    const sortedGames = recommendedGames.sort((a, b) => a.priority - b.priority)
+    const oldIndex = sortedGames.findIndex(item => item.id === active.id)
+    const newIndex = sortedGames.findIndex(item => item.id === over.id)
+
+    if (oldIndex === -1 || newIndex === -1) return
+
+    const newOrderedGames = arrayMove(sortedGames, oldIndex, newIndex)
+    
+    // Update priorities based on new order
+    try {
+      for (let i = 0; i < newOrderedGames.length; i++) {
+        const game = newOrderedGames[i]
+        await recommendedGamesManager.updateRecommendedGame(game.id, { priority: i + 1 })
+      }
+      showAlert('success', 'Game order updated successfully')
+      loadData()
+    } catch (error) {
+      showAlert('error', 'Failed to update game order')
     }
   }
 
@@ -174,73 +329,43 @@ export default function RecommendedGamesManager() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {recommendedGames.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-500">No recommended games configured. Random games will be shown.</p>
-              </div>
-            ) : (
-              recommendedGames.map((recommendation) => {
-                const game = getGameInfo(recommendation.gameId)
-                if (!game) return null
+          {recommendedGames.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">No recommended games configured. Random games will be shown.</p>
+            </div>
+          ) : (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={recommendedGames.sort((a, b) => a.priority - b.priority).map(rec => rec.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="space-y-4">
+                  {recommendedGames
+                    .sort((a, b) => a.priority - b.priority)
+                    .map((recommendation) => {
+                      const game = getGameInfo(recommendation.gameId)
+                      if (!game) return null
 
-                return (
-                  <div key={recommendation.id} className="flex items-center gap-4 p-4 border rounded-lg">
-                    <img 
-                      src={game.thumbnailUrl || '/placeholder.svg'} 
-                      alt={game.name}
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                    <div className="flex-1">
-                      <h3 className="font-medium">{game.name}</h3>
-                      <p className="text-sm text-gray-600">
-                        Priority: {recommendation.priority} | Added: {recommendation.addedDate}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant={recommendation.isActive ? "default" : "secondary"}>
-                        {recommendation.isActive ? "Active" : "Inactive"}
-                      </Badge>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleMovePriority(recommendation.id, 'up')}
-                        disabled={recommendation.priority === 1}
-                      >
-                        <ArrowUp className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleMovePriority(recommendation.id, 'down')}
-                      >
-                        <ArrowDown className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleToggleRecommendedGame(recommendation.id)}
-                      >
-                        {recommendation.isActive ? (
-                          <ToggleRight className="w-4 h-4 text-green-600" />
-                        ) : (
-                          <ToggleLeft className="w-4 h-4 text-gray-400" />
-                        )}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemoveRecommendedGame(recommendation.id)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                )
-              })
-            )}
-          </div>
+                      return (
+                        <SortableRecommendedGame
+                          key={recommendation.id}
+                          recommendation={recommendation}
+                          game={game}
+                          handleToggleRecommendedGame={handleToggleRecommendedGame}
+                          handleRemoveRecommendedGame={handleRemoveRecommendedGame}
+                          handleMovePriority={handleMovePriority}
+                        />
+                      )
+                    })
+                  }
+                </div>
+              </SortableContext>
+            </DndContext>
+          )}
         </CardContent>
       </Card>
 

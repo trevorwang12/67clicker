@@ -61,5 +61,12 @@
     "priority": 9,
     "isActive": true,
     "addedDate": "2025-08-31"
+  },
+  {
+    "id": "rec_1757381623868",
+    "gameId": "clashdle",
+    "priority": 10,
+    "isActive": true,
+    "addedDate": "2025-09-09"
   }
 ]

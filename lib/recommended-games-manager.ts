@@ -109,22 +109,32 @@ class RecommendedGamesManager {
     }
   }
 
-  removeRecommendedGame(recommendationId: string): boolean {
-    const index = this.recommendedGames.findIndex(rec => rec.id === recommendationId)
-    if (index === -1) return false
-
-    this.recommendedGames.splice(index, 1)
-    this.saveToStorage()
-    return true
+  async removeRecommendedGame(recommendationId: string): Promise<boolean> {
+    try {
+      const response = await fetch('/api/admin/recommendations', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recommendationId })
+      })
+      return response.ok
+    } catch (error) {
+      console.error('Error removing recommendation:', error)
+      return false
+    }
   }
 
-  updateRecommendedGame(recommendationId: string, updates: Partial<Pick<RecommendedGame, 'priority' | 'isActive'>>): boolean {
-    const recommendation = this.recommendedGames.find(rec => rec.id === recommendationId)
-    if (!recommendation) return false
-
-    Object.assign(recommendation, updates)
-    this.saveToStorage()
-    return true
+  async updateRecommendedGame(recommendationId: string, updates: Partial<Pick<RecommendedGame, 'priority' | 'isActive'>>): Promise<boolean> {
+    try {
+      const response = await fetch('/api/admin/recommendations', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recommendationId, updates })
+      })
+      return response.ok
+    } catch (error) {
+      console.error('Error updating recommendation:', error)
+      return false
+    }
   }
 
   reorderRecommendedGames(newOrder: string[]): boolean {
@@ -142,13 +152,18 @@ class RecommendedGamesManager {
     }
   }
 
-  toggleRecommendedGame(recommendationId: string): boolean {
-    const recommendation = this.recommendedGames.find(rec => rec.id === recommendationId)
-    if (!recommendation) return false
-
-    recommendation.isActive = !recommendation.isActive
-    this.saveToStorage()
-    return true
+  async toggleRecommendedGame(recommendationId: string): Promise<boolean> {
+    try {
+      const response = await fetch('/api/admin/recommendations', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recommendationId, action: 'toggle' })
+      })
+      return response.ok
+    } catch (error) {
+      console.error('Error toggling recommendation:', error)
+      return false
+    }
   }
 
   // 测试兼容方法别名
