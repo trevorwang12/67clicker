@@ -1,46 +1,45 @@
-# Clashle - Clash Royale Word Puzzle Game
+# Growden - Gaming Platform
 
-A modern, secure, and performant word puzzle game built with Next.js 15, where players guess Clash Royale card names in 5 tries.
+A modern, secure, and performant gaming platform built with Next.js 15, featuring hundreds of free online games.
 
-基于 Next.js 15 构建的现代化、安全、高性能文字谜题游戏，玩家需要在5次尝试内猜出皇室战争卡牌名称。
+基于 Next.js 15 构建的现代化、安全、高性能游戏平台，提供数百款免费在线游戏。
 
-## 🔄 Recent Architecture Overhaul | 近期架构大重构
+## 🔄 Recent Configuration Unification | 近期配置系统统一
 
-**Major security and performance improvements** following Linux kernel development principles:
+**Major configuration system overhaul** following Linux kernel development principles:
 
-**遵循Linux内核开发原则的重大安全和性能改进：**
+**遵循Linux内核开发原则的重大配置系统改进：**
 
-### ✅ What Got Fixed | 修复内容
+### ✅ Configuration System Unified | 配置系统统一
 
-- **🛡️ Security**: Eliminated 15 XSS vulnerabilities, implemented domain whitelist for ads | 消除15个XSS漏洞，广告域名白名单防护
-- **📉 Code Reduction**: Removed 532 lines (-35%) of redundant code | 删除532行冗余代码(-35%)  
-- **🚀 Performance**: API response caching, unified data service, 500-700ms compile time | API响应缓存、统一数据服务、编译时间500-700ms
-- **🔧 Architecture**: Centralized error handling, timeout protection, network resilience | 集中化错误处理、超时保护、网络弹性
-- **📱 Reliability**: Network errors no longer crash pages, graceful degradation | 网络错误不再导致页面崩溃，优雅降级
+- **🔧 Single Source of Truth**: Unified all configuration to SEO JSON file | 统一所有配置到单一SEO JSON文件
+- **⚡ Real-time Sync**: Admin panel updates instantly reflect on frontend | 管理面板更新立即同步到前端
+- **🗑️ Eliminated Complexity**: Removed conflicting config files and duplicate systems | 消除冲突配置文件和重复系统
+- **📋 Cache Management**: Proper cache invalidation ensures data freshness | 适当的缓存失效确保数据新鲜度
+- **🛡️ SEO Optimization**: Fixed robots.txt domain and sitemap formatting issues | 修复robots.txt域名和站点地图格式问题
 
-### 🔒 Security Enhancements | 安全增强
+### 🎯 Key Architectural Improvements | 关键架构改进
 
-- **Safe Ad Rendering**: Domain whitelist (AdSense, approved ad networks only) | 安全广告渲染：域名白名单（仅允许AdSense等认证广告网络）
-- **XSS Protection**: Content sanitization with length limits and dangerous tag filtering | XSS防护：内容清理、长度限制、危险标签过滤  
-- **Script Isolation**: Controlled execution environment for ad scripts | 脚本隔离：广告脚本受控执行环境
-- **Input Validation**: All user inputs validated and sanitized | 输入验证：所有用户输入验证和清理
+- **Unified Config Service**: `/lib/config-service.ts` provides single configuration access point | 统一配置服务提供单一配置访问点
+- **Cache Invalidation**: Admin changes clear cache ensuring frontend sync | 管理更改清除缓存确保前端同步
+- **API Endpoint**: `/app/api/config/route.ts` serves configuration to client components | API端点向客户端组件提供配置
+- **Eliminated Files**: Removed `/config/site-config.ts` and duplicate configuration systems | 移除重复配置系统文件
 
-*This is not refactoring for refactoring's sake - these changes solve real production issues.*
+*Good taste in software design - eliminate special cases and complexity.*
 
-*这不是为了重构而重构 - 这些改变解决了实际的生产环境问题。*
+*软件设计的好品味 - 消除特殊情况和复杂性。*
 
 ## 🚀 Features | 功能特色
 
-### Core Game Features | 核心游戏功能
-- **Daily Puzzle | 每日谜题**: New Clash Royale card to guess every day | 每天都有新的皇室战争卡牌等你猜测
-- **5-Try Challenge | 5次挑战**: Players have exactly 5 attempts to guess the correct card | 玩家有且仅有5次机会猜出正确卡牌
-- **Color-Coded Feedback | 颜色反馈**: Green for correct position, yellow for wrong position, gray for not in word | 绿色表示位置正确，黄色表示字母存在但位置错误，灰色表示字母不存在
-- **All Clash Royale Cards | 所有皇室战争卡牌**: Features comprehensive database of Clash Royale card names | 包含全面的皇室战争卡牌名称数据库
-- **Share Results | 分享结果**: Players can share their daily results with friends | 玩家可以与朋友分享每日成果
-- **Responsive Design | 响应式设计**: Perfect gameplay experience on mobile, tablet, and desktop | 在手机、平板和桌面上都有完美的游戏体验
-- **Keyboard Support | 键盘支持**: Full keyboard input support for desktop players | 桌面玩家完整的键盘输入支持
-- **Progress Tracking | 进度追踪**: Track your daily streak and success rate | 追踪你的连续答题天数和成功率
-- **Hint System | 提示系统**: Subtle hints about card rarity, elixir cost, or type | 关于卡牌稀有度、圣水消耗或类型的微妙提示
+### Core Gaming Features | 核心游戏功能
+- **Game Portal | 游戏门户**: Hundreds of free online games across multiple categories | 数百款免费在线游戏，覆盖多个分类
+- **Instant Play | 即玩即用**: Games load directly in browser without downloads | 游戏直接在浏览器中加载，无需下载
+- **Smart Search | 智能搜索**: Real-time search with autocomplete and category filtering | 实时搜索配备自动完成和分类过滤
+- **Responsive Design | 响应式设计**: Perfect gaming experience on mobile, tablet, and desktop | 在手机、平板和桌面上都有完美的游戏体验
+- **Game Categories | 游戏分类**: Action, puzzle, strategy, arcade, and more organized categories | 动作、益智、策略、街机等有组织的分类
+- **Featured Games | 精选游戏**: Curated selection of top games with dynamic recommendations | 精选顶级游戏配备动态推荐
+- **Game Statistics | 游戏统计**: Track play counts and popularity ratings | 追踪游玩次数和受欢迎程度评级
+- **Safe Gaming | 安全游戏**: All games verified for safety and appropriate content | 所有游戏都经过安全和内容适宜性验证
 
 ### Technical Features | 技术特色
 
@@ -77,22 +76,26 @@ Our new architecture follows **"data structures first"** principle with centrali
 
 ```typescript
 lib/
-├── data-service.ts        # 🔄 Unified data access with caching | 统一数据访问和缓存
-├── error-handler.ts       # 🛡️ Centralized error handling & network resilience | 集中错误处理和网络弹性  
-└── seo-service.ts         # 📊 SEO metadata generation | SEO元数据生成
+├── config-service.ts      # 🔄 Unified configuration management | 统一配置管理
+├── simple-search.ts       # 🔍 Game search and indexing | 游戏搜索和索引
+└── sitemap-manager.ts     # 📊 SEO sitemap generation | SEO站点地图生成
+
+app/api/
+├── config/route.ts        # ⚙️ Configuration API endpoint | 配置API端点
+├── admin/seo/route.ts     # 🛡️ SEO management with cache clearing | SEO管理配备缓存清除
+└── games/route.ts         # 🎮 Games API with search support | 游戏API配备搜索支持
 
 components/
-├── SafeAdSlot.tsx         # 🛡️ Security-hardened ad rendering | 安全强化的广告渲染
-├── SafeAnalytics.tsx      # 📊 Secure analytics integration | 安全分析集成
-├── SafeScriptExecutor.tsx # 🔒 Controlled script execution | 受控脚本执行
-└── ErrorDisplay.tsx       # 🎯 User-friendly error display | 用户友好的错误显示
+├── InstantSearch.tsx      # 🔍 Real-time game search component | 实时游戏搜索组件
+├── OptimizedImage.tsx     # 🖼️ Optimized image loading with WebP | 优化图像加载配备WebP
+└── Header.tsx             # 📋 Dynamic header with unified config | 动态页头配备统一配置
 ```
 
 **Key Architectural Improvements | 关键架构改进:**
-- **DataService**: Single source of truth for all data operations | 所有数据操作的唯一数据源
-- **ErrorHandler**: Network resilience with timeouts and retries | 网络弹性，支持超时和重试
-- **Security Layer**: XSS prevention and content sanitization | XSS防护和内容清理
-- **Service Separation**: Clean separation of concerns | 清晰的关注点分离
+- **Single Config Source**: All configuration from unified SEO JSON file | 所有配置来自统一SEO JSON文件
+- **Cache Management**: Proper invalidation ensures data consistency | 适当的失效确保数据一致性
+- **Real-time Sync**: Admin changes instantly reflect on frontend | 管理更改立即反映到前端
+- **Clean API Design**: RESTful endpoints with proper error handling | 清晰的API设计配备适当的错误处理
 
 ## 📦 Project Structure | 项目结构
 
@@ -168,8 +171,8 @@ gametemplate/
 
 1. **Clone the project | 克隆项目**
    ```bash
-   git clone https://github.com/trevorwang12/worldguessr.git
-   cd worldguessr
+   git clone https://github.com/trevorwang12/Growden.git
+   cd Growden
    ```
 
 2. **Install dependencies | 安装依赖**
@@ -183,8 +186,8 @@ gametemplate/
    ```
 
 4. **Access URLs | 访问地址**
-   - 🎮 **游戏网站**: [http://localhost:5050](http://localhost:5050)
-   - ⚙️ **Admin 管理**: [http://localhost:5050/admin](http://localhost:5050/admin)
+   - 🎮 **游戏网站**: [http://localhost:3000](http://localhost:3000)
+   - ⚙️ **Admin 管理**: [http://localhost:3000/admin](http://localhost:3000/admin)
 
 ### 🔄 完美工作流程 | Perfect Workflow
 
@@ -235,29 +238,35 @@ Configure comprehensive SEO settings through the admin panel | 通过管理面�
    Dynamic placeholders: {gameName}, {gameDescription}, {category}, {siteName}
    ```
 
-### 2. Site Configuration | 网站配置 (`/config/site-config.ts`)
+### 2. Unified Configuration System | 统一配置系统
 
-Configure basic site information | 配置基本网站信息:
+All site configuration is managed through the SEO settings in the admin panel, stored in `/data/seo-settings.json`:
 
-```typescript
-export const siteConfig: SiteConfig = {
-  siteName: "Your Game Site",
-  description: "Your game site description",
-  theme: {
-    primaryColor: "#3b82f6",
-    accentColor: "#f59e0b",
-    // ... other theme settings
-  },
-  features: {
-    search: true,
-    categories: true,
-    favorites: true,
-    // ... other feature flags
+所有网站配置通过管理面板的SEO设置管理，存储在`/data/seo-settings.json`中：
+
+```json
+{
+  "seoSettings": {
+    "siteName": "Your Game Site",
+    "siteDescription": "Your game site description",
+    "siteUrl": "https://yourdomain.com",
+    "author": "Your Name",
+    "twitterHandle": "@yourgames",
+    "ogImage": "/og-image.png",
+    "keywords": ["games", "online games", "free games"],
+    "metaTags": {
+      "themeColor": "#475569",
+      "appleMobileWebAppTitle": "Your Game Site"
+    }
   }
 }
 ```
 
-### 2. Site Settings | 网站设置 (`/data/site-settings.json`)
+**Configuration Access | 配置访问:**
+- **Server-side**: Use `getSiteConfig()` from `/lib/config-service.ts`
+- **Client-side**: Use `fetchSiteConfig()` or call `/api/config` endpoint
+
+### 3. Site Settings | 网站设置 (`/data/site-settings.json`)
 
 Customize homepage layout, features, and behavior | 自定义主页布局、功能和行为:
 
@@ -284,7 +293,7 @@ Customize homepage layout, features, and behavior | 自定义主页布局、功�
 }
 ```
 
-### 3. Game Categories | 游戏分类 (`/data/categories.json`)
+### 4. Game Categories | 游戏分类 (`/data/categories.json`)
 
 Define game categories with icons and colors | 定义游戏分类及其图标和颜色:
 
@@ -301,7 +310,7 @@ Define game categories with icons and colors | 定义游戏分类及其图标和
 ]
 ```
 
-### 4. Games Database | 游戏数据库 (`/data/games.json`)
+### 5. Games Database | 游戏数据库 (`/data/games.json`)
 
 Add games to your site | 向网站添加游戏:
 
