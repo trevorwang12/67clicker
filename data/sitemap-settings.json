@@ -1,6 +1,6 @@
 {
   "settings": {
-    "baseUrl": "https://clashle.org",
+    "baseUrl": "https://growden.net",
     "defaultChangeFreq": "weekly",
     "defaultPriority": 0.5,
     "includeStaticPages": true,
@@ -14,7 +14,7 @@
     ],
     "autoGenerate": true,
     "generateSitemapIndex": true,
-    "lastGenerated": "2025-09-07T15:15:13.437Z"
+    "lastGenerated": "2025-09-12T10:54:13.103Z"
   },
-  "updatedAt": "2025-09-07T15:15:13.441Z"
+  "updatedAt": "2025-09-12T10:54:20.278Z"
 }

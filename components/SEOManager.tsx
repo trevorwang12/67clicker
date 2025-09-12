@@ -16,7 +16,7 @@ import { Globe, Search, Eye, Code, Smartphone, Settings, Link, Download, Upload,
 import { seoManager, type SEOSettings, type GamePageSEO, type CategoryPageSEO } from "@/lib/seo-manager"
 import ImageUploader from "@/components/ImageUploader"
 import CanonicalChecker from "@/components/admin/CanonicalChecker"
-import { getCurrentSiteConfig, DEFAULT_SITE_CONFIG } from '@/config/default-settings'
+import { fetchSiteConfig } from '@/lib/config-service'
 
 export default function SEOManager() {
   const [seoSettings, setSEOSettings] = useState<SEOSettings | null>(null)
@@ -30,8 +30,6 @@ export default function SEOManager() {
   const [gamePageFormData, setGamePageFormData] = useState<Partial<GamePageSEO>>({})
   const [categoryPageFormData, setCategoryPageFormData] = useState<Partial<CategoryPageSEO>>({})
   
-  // Site Config Template states
-  const [activeTemplate, setActiveTemplate] = useState<'current' | 'default'>('current')
 
   useEffect(() => {
     loadSEOData()
@@ -56,38 +54,6 @@ export default function SEOManager() {
     setTimeout(() => setAlert(null), 3000)
   }
 
-  // Load template configurations for basic site info
-  const loadTemplate = (template: 'current' | 'default') => {
-    if (template === 'current' && seoSettings) {
-      setActiveTemplate('current')
-      showAlert('success', 'Current settings loaded')
-      return
-    }
-    
-    const templateConfig = DEFAULT_SITE_CONFIG
-    
-    // Update form data with template values
-    setSEOFormData(prev => ({
-      ...prev,
-      siteName: templateConfig.siteName,
-      siteDescription: templateConfig.siteDescription,
-      siteUrl: templateConfig.siteUrl,
-      author: templateConfig.author,
-      twitterHandle: templateConfig.twitterHandle,
-      siteLogo: templateConfig.siteLogo,
-      favicon: templateConfig.favicon,
-      keywords: templateConfig.keywords,
-      metaTags: {
-        ...prev.metaTags,
-        themeColor: templateConfig.metaTags.themeColor,
-        appleMobileWebAppTitle: templateConfig.metaTags.appleMobileWebAppTitle,
-        appleMobileWebAppCapable: templateConfig.metaTags.appleMobileWebAppCapable
-      }
-    }))
-    
-    setActiveTemplate(template)
-    showAlert('success', 'Generic template loaded. Save to apply changes.')
-  }
 
   const handleSEOSubmit = async () => {
     setIsLoading(true)
@@ -234,41 +200,12 @@ export default function SEOManager() {
               </p>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Configuration Templates */}
-              <div className="space-y-4">
-                <Label className="text-base font-semibold">Configuration Templates</Label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Card className={`cursor-pointer transition-all ${activeTemplate === 'current' ? 'ring-2 ring-blue-500' : 'hover:shadow-md'}`}
-                        onClick={() => loadTemplate('current')}>
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between text-sm">
-                        <span>Current Settings</span>
-                        {activeTemplate === 'current' && <Badge variant="default">Active</Badge>}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-3 pt-0">
-                      <p className="text-xs text-gray-600">
-                        Use your current configuration as the base template.
-                      </p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className={`cursor-pointer transition-all ${activeTemplate === 'default' ? 'ring-2 ring-blue-500' : 'hover:shadow-md'}`}
-                        onClick={() => loadTemplate('default')}>
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between text-sm">
-                        <span>Generic Template</span>
-                        {activeTemplate === 'default' && <Badge variant="default">Loaded</Badge>}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-3 pt-0">
-                      <p className="text-xs text-gray-600">
-                        Generic gaming site configuration suitable for any platform.
-                      </p>
-                    </CardContent>
-                  </Card>
-
-                </div>
+              {/* Configuration Info */}
+              <div className="space-y-2">
+                <Label className="text-base font-semibold">Site Configuration</Label>
+                <p className="text-sm text-gray-600">
+                  Configuration is loaded from SEO settings. Changes are saved directly to the SEO settings.
+                </p>
               </div>
 
               <Separator />

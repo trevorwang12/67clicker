@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Settings, Globe, Copy, Download, Upload, RefreshCw } from "lucide-react"
-import { getCurrentSiteConfig, DEFAULT_SITE_CONFIG, RULE34DLE_CONFIG } from '@/config/default-settings'
+import { fetchSiteConfig } from '@/lib/config-service'
 
 interface SiteConfigData {
   siteName: string
@@ -35,15 +35,16 @@ export default function SiteConfigManager() {
   const [configData, setConfigData] = useState<SiteConfigData | null>(null)
   const [alert, setAlert] = useState<{type: 'success' | 'error' | 'info', message: string} | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [activeTemplate, setActiveTemplate] = useState<'current' | 'default' | 'rule34dle'>('current')
+  const [isLoadingConfig, setIsLoadingConfig] = useState(true)
 
   useEffect(() => {
     loadCurrentConfig()
   }, [])
 
-  const loadCurrentConfig = () => {
+  const loadCurrentConfig = async () => {
+    setIsLoadingConfig(true)
     try {
-      const currentConfig = getCurrentSiteConfig()
+      const currentConfig = await fetchSiteConfig()
       setConfigData({
         siteName: currentConfig.siteName,
         siteDescription: currentConfig.siteDescription,
@@ -54,37 +55,18 @@ export default function SiteConfigManager() {
         favicon: currentConfig.favicon,
         siteLogo: currentConfig.siteLogo,
         keywords: currentConfig.keywords,
-        backupPrefix: currentConfig.backupPrefix,
-        titleSuffix: currentConfig.titleSuffix,
+        backupPrefix: 'gaming-site',
+        titleSuffix: currentConfig.titleSuffix || 'GAMES',
         metaTags: currentConfig.metaTags
       })
-      setActiveTemplate('current')
     } catch (error) {
       console.error('Failed to load current config:', error)
       showAlert('error', 'Failed to load current configuration')
+    } finally {
+      setIsLoadingConfig(false)
     }
   }
 
-  const loadTemplate = (template: 'default' | 'rule34dle') => {
-    const templateConfig = template === 'default' ? DEFAULT_SITE_CONFIG : RULE34DLE_CONFIG
-    
-    setConfigData({
-      siteName: templateConfig.siteName,
-      siteDescription: templateConfig.siteDescription,
-      siteUrl: templateConfig.siteUrl,
-      author: templateConfig.author,
-      twitterHandle: templateConfig.twitterHandle,
-      ogImage: templateConfig.ogImage,
-      favicon: templateConfig.favicon,
-      siteLogo: templateConfig.siteLogo,
-      keywords: templateConfig.keywords,
-      backupPrefix: templateConfig.backupPrefix,
-      titleSuffix: templateConfig.titleSuffix,
-      metaTags: templateConfig.metaTags
-    })
-    setActiveTemplate(template)
-    showAlert('info', `Loaded ${template} template. Click save to apply changes.`)
-  }
 
   const showAlert = (type: 'success' | 'error' | 'info', message: string) => {
     setAlert({type, message})
@@ -121,7 +103,7 @@ export default function SiteConfigManager() {
 
       if (response.ok) {
         showAlert('success', 'Site configuration saved successfully!')
-        setActiveTemplate('current')
+        await loadCurrentConfig() // 重新加载配置
       } else {
         throw new Error('Failed to save configuration')
       }
@@ -160,7 +142,7 @@ export default function SiteConfigManager() {
     })
   }
 
-  if (!configData) {
+  if (isLoadingConfig || !configData) {
     return (
       <Card>
         <CardHeader>
@@ -192,35 +174,21 @@ export default function SiteConfigManager() {
             </Alert>
           )}
 
-          {/* Template Selection */}
-          <div className="space-y-4">
-            <Label className="text-base font-semibold">Configuration Templates</Label>
-            <div className="flex gap-2">
-              <Button
-                variant={activeTemplate === 'current' ? 'default' : 'outline'}
-                size="sm"
-                onClick={loadCurrentConfig}
-              >
-                Current
-                {activeTemplate === 'current' && <Badge className="ml-2 bg-green-500">Active</Badge>}
-              </Button>
-              <Button
-                variant={activeTemplate === 'default' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => loadTemplate('default')}
-              >
-                Generic Template
-                {activeTemplate === 'default' && <Badge className="ml-2 bg-blue-500">Loaded</Badge>}
-              </Button>
-              <Button
-                variant={activeTemplate === 'rule34dle' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => loadTemplate('rule34dle')}
-              >
-                Rule34dle Template
-                {activeTemplate === 'rule34dle' && <Badge className="ml-2 bg-purple-500">Loaded</Badge>}
-              </Button>
+          {/* Refresh Configuration */}
+          <div className="flex justify-between items-center">
+            <div>
+              <Label className="text-base font-semibold">Current Site Configuration</Label>
+              <p className="text-sm text-gray-600">Loaded from SEO settings</p>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={loadCurrentConfig}
+              disabled={isLoadingConfig}
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${isLoadingConfig ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
           </div>
 
           <Separator />

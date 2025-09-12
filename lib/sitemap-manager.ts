@@ -36,7 +36,7 @@ class SitemapManager {
 
   private getDefaultSettings(): SitemapSettings {
     return {
-      baseUrl: 'https://worldguessr.pro',
+      baseUrl: 'https://growden.net',
       defaultChangeFreq: 'weekly',
       defaultPriority: 0.5,
       includeStaticPages: true,

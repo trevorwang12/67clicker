@@ -1,9 +1,9 @@
 {
   "branding": {
     "showLogo": true,
-    "logoText": "Clashle",
+    "logoText": "",
     "logoIcon": "gamepad2",
-    "description": "Discover the story behind the world's most beloved Clash Royale word puzzle game.",
+    "description": "The ultimate farming simulation experience. Grow your dream garden today!",
     "customDescription": ""
   },
   "navigation": {
@@ -123,7 +123,7 @@
   },
   "copyright": {
     "isVisible": true,
-    "text": "@{siteName}. clashle.org is an independent website. It is not affiliated with any organizations.All rights reserved.",
+    "text": "@{siteName}. Growden.net is an independent website. It is not affiliated with any Growden.io",
     "customText": ""
   },
   "friendlyLinks": {

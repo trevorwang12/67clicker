@@ -1,3 +1,4 @@
+// @deprecated 此文件已弃用，请使用 /lib/config-service.ts
 // 默认网站配置 - 所有新网站的通用模板
 export const DEFAULT_SITE_CONFIG = {
   // 基本站点信息

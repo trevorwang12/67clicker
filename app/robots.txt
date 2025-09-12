@@ -19,4 +19,4 @@ Disallow: /ad-script-test
 Disallow: /debug*
 
 # Sitemap
-Sitemap: https://clashle.org/sitemap.xml
+Sitemap: https://growden.net/sitemap.xml
