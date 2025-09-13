@@ -219,18 +219,11 @@ export default function HomePage() {
 
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Main H1 Title */}
-        {isClient && (
-          <PageH1 
-            pageType="homepage" 
-            data={{ siteName: seoData?.seoSettings?.siteName || 'GAMES' }} 
-            className="text-center mb-8"
-          />
-        )}
-        {!isClient && (
-          <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">
-            GAMES - Best Free Online Games
-          </h1>
-        )}
+        <PageH1 
+          pageType="homepage" 
+          data={{ siteName: seoData?.seoSettings?.siteName || 'GAMES' }} 
+          className="text-center mb-8"
+        />
 
         <div className="flex gap-6">
           {/* Main Content */}

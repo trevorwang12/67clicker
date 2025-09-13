@@ -14,7 +14,6 @@ interface PageH1Props {
 }
 
 export default function PageH1({ pageType, template, data = {}, className = '' }: PageH1Props) {
-  const [isClient, setIsClient] = useState(false)
   const [headingText, setHeadingText] = useState<string>('')
   const [headingStructure, setHeadingStructure] = useState<any>(null)
   
@@ -32,19 +31,18 @@ export default function PageH1({ pageType, template, data = {}, className = '' }
     }
   }
 
-  // 初始服务端渲染使用fallback标题
+  // 初始标题用于服务端和客户端初始渲染
   const initialTitle = getFallbackTitle()
   
   useEffect(() => {
-    setIsClient(true)
     loadHeadingStructure()
   }, [])
   
   useEffect(() => {
-    if (isClient && headingStructure) {
+    if (headingStructure) {
       generateHeading()
     }
-  }, [isClient, headingStructure, pageType, template, data])
+  }, [headingStructure, pageType, template, data])
   
   const loadHeadingStructure = async () => {
     try {
@@ -56,6 +54,8 @@ export default function PageH1({ pageType, template, data = {}, className = '' }
       }
     } catch (error) {
       console.error('Failed to load heading structure:', error)
+      // 如果加载失败，使用初始标题
+      setHeadingText(initialTitle)
     }
   }
   
@@ -106,8 +106,8 @@ export default function PageH1({ pageType, template, data = {}, className = '' }
     setHeadingText(text || getFallbackTitle())
   }
   
-  // 使用服务端安全的显示文本
-  const displayText = isClient ? (headingText || initialTitle) : initialTitle
+  // 显示文本：优先使用动态生成的标题，否则使用初始标题
+  const displayText = headingText || initialTitle
   
   return (
     <h1 className={`text-3xl font-bold text-gray-900 mb-6 ${className}`}>
