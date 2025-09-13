@@ -72,7 +72,7 @@
       ]
     },
     {
-      "source": "/api/games/(.*)",
+      "source": "/api/games/:path*",
       "headers": [
         {
           "key": "Cache-Control",
@@ -81,7 +81,7 @@
       ]
     },
     {
-      "source": "/api/seo/(.*)",
+      "source": "/api/seo/:path*",
       "headers": [
         {
           "key": "Cache-Control",
@@ -90,7 +90,7 @@
       ]
     },
     {
-      "source": "/api/sitemap(.*)",
+      "source": "/api/sitemap:path*",
       "headers": [
         {
           "key": "Cache-Control",
@@ -116,7 +116,7 @@
       ]
     },
     {
-      "source": "/api/categories/(.*)",
+      "source": "/api/categories/:path*",
       "headers": [
         {
           "key": "Cache-Control",
@@ -125,7 +125,7 @@
       ]
     },
     {
-      "source": "/api/admin/(.*)",
+      "source": "/api/admin/:path*",
       "headers": [
         {
           "key": "Cache-Control",
@@ -134,7 +134,7 @@
       ]
     },
     {
-      "source": "/api/(.*)",
+      "source": "/api/:path*",
       "headers": [
         {
           "key": "Cache-Control",
@@ -143,7 +143,7 @@
       ]
     },
     {
-      "source": "/_next/static/(.*)",
+      "source": "/_next/static/:path*",
       "headers": [
         {
           "key": "Cache-Control",
@@ -152,7 +152,7 @@
       ]
     },
     {
-      "source": "/_next/image(.*)",
+      "source": "/_next/image:path*",
       "headers": [
         {
           "key": "Cache-Control",
@@ -161,7 +161,7 @@
       ]
     },
     {
-      "source": "/uploads/(.*)",
+      "source": "/uploads/:path*",
       "headers": [
         {
           "key": "Cache-Control",
@@ -170,7 +170,7 @@
       ]
     },
     {
-      "source": "/_next/static/css/(.*)",
+      "source": "/_next/static/css/:path*",
       "headers": [
         {
           "key": "Content-Type",
@@ -183,7 +183,7 @@
       ]
     },
     {
-      "source": "/_next/static/chunks/(.*)",
+      "source": "/_next/static/chunks/:path*",
       "headers": [
         {
           "key": "Content-Type",
