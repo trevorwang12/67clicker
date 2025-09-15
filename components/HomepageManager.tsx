@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Home, Settings, Eye, EyeOff, Save, RotateCcw, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Edit, Star, Play } from "lucide-react"
-import { homepageManager, HomepageContent } from "@/lib/homepage-manager"
+import { homepageManager, HomepageContent, GameGalleryImage, GameGallerySection } from "@/lib/homepage-manager"
 import { featuredGamesManager, type FeaturedGame } from "@/lib/feature-games-manager"
 import { sanitizeInput } from "@/lib/security"
 import ImageUploader from "@/components/ImageUploader"
@@ -115,6 +115,18 @@ export default function HomepageManager() {
   })
   const [editingFeaturedGame, setEditingFeaturedGame] = useState<FeaturedGame | null>(null)
   const [isFeaturedGameDialogOpen, setIsFeaturedGameDialogOpen] = useState(false)
+
+  // Game Gallery states
+  const [gameGalleryImages, setGameGalleryImages] = useState<GameGalleryImage[]>([])
+  const [galleryImageFormData, setGalleryImageFormData] = useState({
+    title: '',
+    description: '',
+    src: '',
+    gameUrl: ''
+  })
+  const [editingGalleryImage, setEditingGalleryImage] = useState<GameGalleryImage | null>(null)
+  const [isGalleryImageDialogOpen, setIsGalleryImageDialogOpen] = useState(false)
+
   const [alert, setAlert] = useState<{type: 'success' | 'error', message: string} | null>(null)
 
   // Gradient options for featured games
@@ -155,6 +167,11 @@ export default function HomepageManager() {
       setFeaturedGames(games)
     }
     loadFeaturedGames()
+  }, [])
+
+  // Load game gallery images on mount
+  useEffect(() => {
+    loadGameGalleryImages()
   }, [])
 
   // Featured Games functions
@@ -275,6 +292,139 @@ export default function HomepageManager() {
       isActive: false
     })
     setEditingFeaturedGame(null)
+  }
+
+  // Game Gallery handlers
+  const loadGameGalleryImages = async () => {
+    const content = await homepageManager.getContent()
+    if (content?.gameGallery?.images) {
+      setGameGalleryImages(content.gameGallery.images)
+    }
+  }
+
+  const handleGalleryImageSave = async () => {
+    if (!galleryImageFormData.title.trim() || !galleryImageFormData.src.trim()) {
+      showAlert('error', 'Title and image are required')
+      return
+    }
+
+    try {
+      const content = await homepageManager.getContent()
+      if (!content) return
+
+      const imageData: GameGalleryImage = {
+        id: editingGalleryImage ? editingGalleryImage.id : `img_${Date.now()}`,
+        title: sanitizeInput(galleryImageFormData.title),
+        description: sanitizeInput(galleryImageFormData.description),
+        src: galleryImageFormData.src,
+        gameUrl: galleryImageFormData.gameUrl
+      }
+
+      let updatedImages = [...(content.gameGallery?.images || [])]
+
+      if (editingGalleryImage) {
+        const index = updatedImages.findIndex(img => img.id === editingGalleryImage.id)
+        if (index !== -1) {
+          updatedImages[index] = imageData
+        }
+        showAlert('success', 'Gallery image updated successfully!')
+      } else {
+        updatedImages.push(imageData)
+        showAlert('success', 'Gallery image added successfully!')
+      }
+
+      const updatedContent = {
+        ...content,
+        gameGallery: {
+          ...content.gameGallery,
+          images: updatedImages
+        }
+      }
+
+      const success = await homepageManager.saveContent(updatedContent)
+      if (success) {
+        setContent(updatedContent)
+        loadGameGalleryImages()
+        handleGalleryImageDialogClose()
+      }
+    } catch (error) {
+      console.error('Error saving gallery image:', error)
+      showAlert('error', 'An error occurred while saving the gallery image')
+    }
+  }
+
+  const handleGalleryImageEdit = (image: GameGalleryImage) => {
+    setEditingGalleryImage(image)
+    setGalleryImageFormData({
+      title: image.title,
+      description: image.description || '',
+      src: image.src,
+      gameUrl: image.gameUrl || ''
+    })
+    setIsGalleryImageDialogOpen(true)
+  }
+
+  const handleGalleryImageDelete = async (imageId: string) => {
+    if (confirm('Are you sure you want to delete this gallery image?')) {
+      try {
+        const content = await homepageManager.getContent()
+        if (!content) return
+
+        const updatedImages = content.gameGallery?.images?.filter(img => img.id !== imageId) || []
+        const updatedContent = {
+          ...content,
+          gameGallery: {
+            ...content.gameGallery,
+            images: updatedImages
+          }
+        }
+
+        const success = await homepageManager.saveContent(updatedContent)
+        if (success) {
+          setContent(updatedContent)
+          loadGameGalleryImages()
+          showAlert('success', 'Gallery image deleted successfully!')
+        }
+      } catch (error) {
+        console.error('Error deleting gallery image:', error)
+        showAlert('error', 'Failed to delete gallery image')
+      }
+    }
+  }
+
+  const handleGalleryImageDialogClose = () => {
+    setIsGalleryImageDialogOpen(false)
+    setGalleryImageFormData({
+      title: '',
+      description: '',
+      src: '',
+      gameUrl: ''
+    })
+    setEditingGalleryImage(null)
+  }
+
+  const handleGallerySettingsUpdate = async (updates: Partial<GameGallerySection>) => {
+    try {
+      const content = await homepageManager.getContent()
+      if (!content) return
+
+      const updatedContent = {
+        ...content,
+        gameGallery: {
+          ...content.gameGallery,
+          ...updates
+        }
+      }
+
+      const success = await homepageManager.saveContent(updatedContent)
+      if (success) {
+        setContent(updatedContent)
+        showAlert('success', 'Gallery settings updated successfully!')
+      }
+    } catch (error) {
+      console.error('Error updating gallery settings:', error)
+      showAlert('error', 'Failed to update gallery settings')
+    }
   }
 
   const showAlert = (type: 'success' | 'error', message: string) => {
@@ -433,6 +583,7 @@ export default function HomepageManager() {
           <TabsTrigger value="sections">Section Visibility</TabsTrigger>
           <TabsTrigger value="hero">Hero & Featured Game</TabsTrigger>
           <TabsTrigger value="featured-games">Featured Games Management</TabsTrigger>
+          <TabsTrigger value="game-gallery">Game Gallery</TabsTrigger>
           <TabsTrigger value="content">Content Sections</TabsTrigger>
           <TabsTrigger value="faq">FAQ Management</TabsTrigger>
           <TabsTrigger value="custom">Custom HTML</TabsTrigger>
@@ -811,6 +962,207 @@ export default function HomepageManager() {
                     </>
                   )
                 })()}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Game Gallery Management */}
+        <TabsContent value="game-gallery" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Game Gallery Management</CardTitle>
+                <Dialog open={isGalleryImageDialogOpen} onOpenChange={setIsGalleryImageDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button onClick={() => setGalleryImageFormData({
+                      title: '',
+                      description: '',
+                      src: '',
+                      gameUrl: ''
+                    })}>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Gallery Image
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>{editingGalleryImage ? 'Edit Gallery Image' : 'Add New Gallery Image'}</DialogTitle>
+                      <DialogDescription>
+                        {editingGalleryImage ? 'Edit the gallery image details and settings.' : 'Add a new image to the game gallery section.'}
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div>
+                        <Label htmlFor="galleryImageTitle">Image Title *</Label>
+                        <Input
+                          id="galleryImageTitle"
+                          value={galleryImageFormData.title}
+                          onChange={(e) => setGalleryImageFormData(prev => ({ ...prev, title: e.target.value }))}
+                          placeholder="Enter image title"
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="galleryImageDescription">Description</Label>
+                        <Textarea
+                          id="galleryImageDescription"
+                          value={galleryImageFormData.description}
+                          onChange={(e) => setGalleryImageFormData(prev => ({ ...prev, description: e.target.value }))}
+                          placeholder="Image description (optional)"
+                        />
+                      </div>
+
+                      <ImageUploader
+                        label="Gallery Image *"
+                        value={galleryImageFormData.src}
+                        onChange={(url) => setGalleryImageFormData(prev => ({ ...prev, src: url }))}
+                        placeholder="Upload or enter image URL"
+                      />
+
+                      <div>
+                        <Label htmlFor="galleryImageGameUrl">Game URL (optional)</Label>
+                        <Input
+                          id="galleryImageGameUrl"
+                          value={galleryImageFormData.gameUrl}
+                          onChange={(e) => setGalleryImageFormData(prev => ({ ...prev, gameUrl: e.target.value }))}
+                          placeholder="https://example.com/game or /game/slug"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex justify-end space-x-2">
+                      <Button variant="outline" onClick={handleGalleryImageDialogClose}>
+                        Cancel
+                      </Button>
+                      <Button onClick={handleGalleryImageSave}>
+                        {editingGalleryImage ? 'Update Image' : 'Add Image'}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {/* Gallery Settings */}
+              <div className="mb-6 space-y-4">
+                <h3 className="text-lg font-semibold">Gallery Settings</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="galleryTitleSetting">Gallery Title</Label>
+                    <Input
+                      id="galleryTitleSetting"
+                      value={content?.gameGallery?.title || ''}
+                      onChange={(e) => handleGallerySettingsUpdate({ title: e.target.value })}
+                      placeholder="Game Gallery"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="gallerySubtitleSetting">Subtitle</Label>
+                    <Input
+                      id="gallerySubtitleSetting"
+                      value={content?.gameGallery?.subtitle || ''}
+                      onChange={(e) => handleGallerySettingsUpdate({ subtitle: e.target.value })}
+                      placeholder="Discover Amazing Games"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="galleryDisplayMode">Display Mode</Label>
+                    <Select
+                      value={content?.gameGallery?.displayMode || 'grid'}
+                      onValueChange={(value: 'grid' | 'carousel') => handleGallerySettingsUpdate({ displayMode: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select display mode" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="grid">Grid Layout</SelectItem>
+                        <SelectItem value="carousel">Carousel</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="galleryColumns">Columns (Grid Mode)</Label>
+                    <Select
+                      value={String(content?.gameGallery?.columns || 3)}
+                      onValueChange={(value) => handleGallerySettingsUpdate({ columns: Number(value) as 2 | 3 | 4 })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select columns" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="2">2 Columns</SelectItem>
+                        <SelectItem value="3">3 Columns</SelectItem>
+                        <SelectItem value="4">4 Columns</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="showTitles"
+                        checked={content?.gameGallery?.showTitles ?? true}
+                        onCheckedChange={(checked) => handleGallerySettingsUpdate({ showTitles: checked })}
+                      />
+                      <Label htmlFor="showTitles">Show Titles</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="showDescriptions"
+                        checked={content?.gameGallery?.showDescriptions ?? true}
+                        onCheckedChange={(checked) => handleGallerySettingsUpdate({ showDescriptions: checked })}
+                      />
+                      <Label htmlFor="showDescriptions">Show Descriptions</Label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Gallery Images List */}
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Gallery Images ({gameGalleryImages.length})</h3>
+                {gameGalleryImages.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {gameGalleryImages.map((image) => (
+                      <div key={image.id} className="border rounded-lg p-4 space-y-3">
+                        <div className="aspect-video overflow-hidden rounded-lg bg-gray-100">
+                          <img
+                            src={image.src}
+                            alt={image.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = '/placeholder.svg'
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-sm">{image.title}</h4>
+                          {image.description && (
+                            <p className="text-xs text-gray-600 mt-1">{image.description}</p>
+                          )}
+                          {image.gameUrl && (
+                            <p className="text-xs text-blue-600 mt-1">Links to: {image.gameUrl}</p>
+                          )}
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <Button size="sm" variant="outline" onClick={() => handleGalleryImageEdit(image)}>
+                            <Edit className="w-3 h-3 mr-1" />
+                            Edit
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => handleGalleryImageDelete(image.id)}>
+                            <Trash2 className="w-3 h-3 mr-1" />
+                            Delete
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    No gallery images added yet. Click "Add Gallery Image" to create your first gallery image.
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

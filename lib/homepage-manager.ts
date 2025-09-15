@@ -17,6 +17,25 @@ export interface CustomHtmlSection {
   isVisible: boolean
 }
 
+export interface GameGalleryImage {
+  id: string
+  src: string
+  title: string
+  description?: string
+  gameUrl?: string
+}
+
+export interface GameGallerySection {
+  isVisible: boolean
+  title: string
+  subtitle?: string
+  displayMode: 'grid' | 'carousel'
+  columns: 2 | 3 | 4
+  showTitles: boolean
+  showDescriptions: boolean
+  images: GameGalleryImage[]
+}
+
 interface HomepageContent {
   hero: {
     isVisible: boolean
@@ -83,6 +102,7 @@ interface HomepageContent {
       answer: string
     }[]
   }
+  gameGallery: GameGallerySection
   youMightAlsoLike: {
     isVisible: boolean
   }
@@ -229,6 +249,16 @@ class HomepageManager {
           }
         ]
       },
+      gameGallery: {
+        isVisible: false,
+        title: "Game Gallery",
+        subtitle: "Discover Amazing Games",
+        displayMode: 'grid' as const,
+        columns: 3 as const,
+        showTitles: true,
+        showDescriptions: true,
+        images: []
+      },
       youMightAlsoLike: {
         isVisible: true
       },
@@ -246,7 +276,8 @@ class HomepageManager {
         howToPlay: 4,
         whyChooseUs: 5,
         faq: 6,
-        youMightAlsoLike: 7,
+        gameGallery: 7,
+        youMightAlsoLike: 8,
         customHtml: 8
       }
     }
@@ -262,6 +293,21 @@ class HomepageManager {
   async getSection(sectionName: keyof HomepageContent): Promise<any> {
     const content = await this.loadFromAPI()
     return content[sectionName]
+  }
+
+  // Save entire content
+  async saveContent(content: HomepageContent): Promise<boolean> {
+    try {
+      const response = await fetch('/api/admin/homepage', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'save', content })
+      })
+      return response.ok
+    } catch (error) {
+      console.error('Error saving homepage content:', error)
+      return false
+    }
   }
 
   // Update methods
@@ -347,6 +393,7 @@ class HomepageManager {
       { id: 'howToPlay' as keyof HomepageContent, name: 'How to Play Section', isVisible: content.howToPlay?.isVisible || false },
       { id: 'whyChooseUs' as keyof HomepageContent, name: 'Why Choose Us Section', isVisible: content.whyChooseUs?.isVisible || false },
       { id: 'faq' as keyof HomepageContent, name: 'FAQ Section', isVisible: content.faq?.isVisible || false },
+      { id: 'gameGallery' as keyof HomepageContent, name: 'Game Gallery', isVisible: content.gameGallery?.isVisible || false },
       { id: 'youMightAlsoLike' as keyof HomepageContent, name: 'You Might Also Like', isVisible: content.youMightAlsoLike?.isVisible || false }
     ]
 

@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Search, Play, Star, ArrowLeft, Gamepad2 } from "lucide-react"
 import { simpleSearch, GameData } from "@/lib/simple-search"
+import { getGameImageAlt } from '@/lib/image-utils'
 import AdSlot from "@/components/SafeAdSlot"
 import PageH1 from "@/components/PageH1"
 import YouMightAlsoLike from "@/components/YouMightAlsoLike"
@@ -126,7 +127,7 @@ export default function SearchPageClient() {
                           <div className="relative">
                             <img 
                               src={game.thumbnailUrl || "/placeholder.svg"} 
-                              alt={game.name} 
+                              alt={getGameImageAlt(game)} 
                               className="w-full h-48 object-cover group-hover:opacity-90 transition-opacity" 
                             />
                             

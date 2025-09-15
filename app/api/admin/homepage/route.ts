@@ -15,6 +15,25 @@ interface CustomHtmlSection {
   isVisible: boolean
 }
 
+interface GameGalleryImage {
+  id: string
+  src: string
+  title: string
+  description?: string
+  gameUrl?: string
+}
+
+interface GameGallerySection {
+  isVisible: boolean
+  title: string
+  subtitle?: string
+  displayMode: 'grid' | 'carousel'
+  columns: 2 | 3 | 4
+  showTitles: boolean
+  showDescriptions: boolean
+  images: GameGalleryImage[]
+}
+
 interface HomepageContent {
   hero: {
     isVisible: boolean
@@ -81,6 +100,7 @@ interface HomepageContent {
       answer: string
     }[]
   }
+  gameGallery: GameGallerySection
   youMightAlsoLike: {
     isVisible: boolean
   }
@@ -251,6 +271,16 @@ function getDefaultContent(): HomepageContent {
         }
       ]
     },
+    gameGallery: {
+      isVisible: false,
+      title: "Game Gallery",
+      subtitle: "Discover Amazing Games",
+      displayMode: 'grid' as const,
+      columns: 3 as const,
+      showTitles: true,
+      showDescriptions: true,
+      images: []
+    },
     youMightAlsoLike: {
       isVisible: true
     },
@@ -263,7 +293,8 @@ function getDefaultContent(): HomepageContent {
       howToPlay: 4,
       whyChooseUs: 5,
       faq: 6,
-      youMightAlsoLike: 7
+      gameGallery: 7,
+      youMightAlsoLike: 8
     }
   }
 }
@@ -294,11 +325,20 @@ export async function PUT(request: NextRequest) {
 
   logAdminAccess('/api/admin/homepage', true)
   try {
+    const body = await request.json()
+
+    // Handle full content save (for Game Gallery and other complex operations)
+    if (body.action === 'save' && body.content) {
+      homepageContent = body.content
+      await saveToFile(homepageContent)
+      return NextResponse.json(homepageContent)
+    }
+
     // Load latest data from file before making changes
     homepageContent = await loadFromFile()
-    
-    const { section, updates } = await request.json()
-    
+
+    const { section, updates } = body
+
     if (section === 'sectionOrder') {
       // Handle section order update
       homepageContent.sectionOrder = updates
@@ -316,10 +356,10 @@ export async function PUT(request: NextRequest) {
         }
       }
     }
-    
+
     // 保存到文件
     await saveToFile(homepageContent)
-    
+
     return NextResponse.json(section === 'sectionOrder' ? homepageContent.sectionOrder : homepageContent[section as keyof HomepageContent])
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update homepage content' }, { status: 500 })

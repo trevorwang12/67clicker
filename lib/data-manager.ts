@@ -112,29 +112,23 @@ class DataManager {
     }
   }
 
-  // Games Management - always use JSON data
+  // Games Management - use cached data, don't hammer API
   async getAllGames(): Promise<GameData[]> {
-    // Ensure we have the latest data
-    await this.initializeFromAPI()
-    
     const cached = cacheManager.get('all-games')
     if (cached) return cached
-    
+
     const result = this.games.filter(game => game.isActive)
-    cacheManager.set('all-games', result, 5 * 60 * 1000)
+    cacheManager.set('all-games', result, 30 * 60 * 1000) // 30 min cache
     return result
   }
 
   async getGameById(id: string): Promise<GameData | null> {
-    // Ensure we have the latest data
-    await this.initializeFromAPI()
-    
     const cacheKey = `game-${id}`
     const cached = cacheManager.get(cacheKey)
     if (cached) return cached
-    
+
     const result = this.games.find(game => game.id === id && game.isActive) || null
-    cacheManager.set(cacheKey, result, 10 * 60 * 1000)
+    cacheManager.set(cacheKey, result, 60 * 60 * 1000) // 1 hour cache
     return result
   }
 
@@ -205,11 +199,8 @@ class DataManager {
   }
 
   async searchGames(query: string, limit?: number): Promise<GameData[]> {
-    // 确保数据已经初始化
-    await this.initializeFromAPI()
-    
     const searchTerm = query.toLowerCase()
-    const results = this.games.filter(game => 
+    const results = this.games.filter(game =>
       game.isActive && (
         game.name.toLowerCase().includes(searchTerm) ||
         game.description.toLowerCase().includes(searchTerm) ||
@@ -238,14 +229,11 @@ class DataManager {
 
   // Categories Management
   async getAllCategories(): Promise<Category[]> {
-    // Ensure we have the latest data
-    await this.initializeFromAPI()
-    
     const cached = cacheManager.get('all-categories')
     if (cached) return cached
-    
+
     const result = this.categories.filter(category => category.isActive)
-    cacheManager.set('all-categories', result, 5 * 60 * 1000)
+    cacheManager.set('all-categories', result, 60 * 60 * 1000) // 1 hour cache
     return result
   }
 
@@ -254,15 +242,12 @@ class DataManager {
   }
 
   async getCategoryById(id: string): Promise<Category | null> {
-    // Ensure we have the latest data
-    await this.initializeFromAPI()
-    
     const cacheKey = `category-${id}`
     const cached = cacheManager.get(cacheKey)
     if (cached) return cached
-    
+
     const result = this.categories.find(category => category.id === id && category.isActive) || null
-    cacheManager.set(cacheKey, result, 10 * 60 * 1000)
+    cacheManager.set(cacheKey, result, 60 * 60 * 1000) // 1 hour cache
     return result
   }
 

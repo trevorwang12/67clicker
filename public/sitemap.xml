@@ -2,43 +2,43 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://growden.net</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>1</priority>
   </url>
   <url>
     <loc>https://growden.net/about</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://growden.net/contact</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://growden.net/privacy</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://growden.net/terms</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://growden.net/hot-games</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://growden.net/new-games</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -85,12 +85,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://growden.net/game/clashdle</loc>
-    <lastmod>2025-08-31</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://growden.net/game/a-shedletsky-pov</loc>
     <lastmod>2025-08-31</lastmod>
     <changefreq>weekly</changefreq>
@@ -103,68 +97,80 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://growden.net/category/action</loc>
+    <loc>https://growden.net/game/farm-merge-valley</loc>
     <lastmod>2025-09-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://growden.net/game/agario</loc>
+    <lastmod>2025-09-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://growden.net/category/action</loc>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://growden.net/category/puzzle</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://growden.net/category/strategy</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://growden.net/category/casual</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://growden.net/category/arcade</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://growden.net/category/sports</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://growden.net/category/racing</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://growden.net/category/adventure</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://growden.net/category/simulation</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://growden.net/category/multiplayer</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://growden.net/category/meme-games</loc>
-    <lastmod>2025-09-12</lastmod>
+    <lastmod>2025-09-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

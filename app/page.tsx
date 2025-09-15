@@ -10,8 +10,10 @@ import { Search, Star, Play, Users, Gamepad2 } from "lucide-react"
 import { dataManager } from '@/lib/data-manager'
 import { featuredGamesManager } from '@/lib/feature-games-manager'
 import { homepageManager } from '@/lib/homepage-manager'
+import { getGameImageAlt } from '@/lib/image-utils'
 import AdSlot from '@/components/SafeAdSlot'
 import GamePlayer from '@/components/GamePlayer'
+import GameGallery from '@/components/GameGallery'
 import YouMightAlsoLike from '@/components/YouMightAlsoLike'
 import InstantSearch from '@/components/InstantSearch'
 import SEOHead from '@/components/SEOHead'
@@ -42,27 +44,20 @@ export default function HomePage() {
     "🚀 Preparing the ultimate gaming experience for you..."
   ]
 
-  // Helper function to render sections based on order
+  // Helper function to render sections based on order - currently not used but prepared for future dynamic ordering
   const renderSectionByType = (sectionType: string) => {
     if (!homepageContent) return null
 
     switch (sectionType) {
       case 'featuredGame':
-        return renderFeaturedGameSection()
       case 'newGames':
-        return renderNewGamesSection()
       case 'features':
-        return renderFeaturesSection()
       case 'whatIs':
-        return renderWhatIsSection()
       case 'howToPlay':
-        return renderHowToPlaySection()
       case 'whyChooseUs':
-        return renderWhyChooseUsSection()
       case 'faq':
-        return renderFAQSection()
+      case 'gameGallery':
       case 'youMightAlsoLike':
-        return renderYouMightAlsoLikeSection()
       default:
         return null
     }
@@ -412,7 +407,7 @@ export default function HomePage() {
                         <div className="aspect-[4/3] overflow-hidden flex-shrink-0 relative bg-gray-100">
                           <img 
                             src={game.thumbnailUrl?.replace(/\.png$/i, '.webp') || "/placeholder.svg"} 
-                            alt={game.name} 
+                            alt={getGameImageAlt(game)} 
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                             loading={index < 4 ? "eager" : "lazy"}
                             fetchPriority={index < 2 ? "high" : "auto"}
@@ -616,6 +611,19 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
+            )}
+
+            {/* Game Gallery Section */}
+            {isClient && homepageContent?.gameGallery?.isVisible && (
+              <GameGallery
+                title={homepageContent.gameGallery.title}
+                subtitle={homepageContent.gameGallery.subtitle}
+                displayMode={homepageContent.gameGallery.displayMode}
+                columns={homepageContent.gameGallery.columns}
+                showTitles={homepageContent.gameGallery.showTitles}
+                showDescriptions={homepageContent.gameGallery.showDescriptions}
+                images={homepageContent.gameGallery.images}
+              />
             )}
           </div>
 
