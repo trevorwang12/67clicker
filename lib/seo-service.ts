@@ -64,10 +64,22 @@ export class SeoService {
           site: seoSettings.twitterHandle,
           images: [seoSettings.ogImage],
         },
-        icons: {
-          icon: seoSettings.favicon,
-          apple: seoSettings.siteLogo,
-        },
+        icons: [
+          {
+            url: '/favicon.ico',
+            sizes: '32x32',
+            type: 'image/x-icon',
+          },
+          {
+            url: '/favicon.svg',
+            type: 'image/svg+xml',
+          },
+          {
+            url: seoSettings.siteLogo,
+            sizes: '180x180',
+            rel: 'apple-touch-icon',
+          }
+        ],
         other: {
           'theme-color': seoSettings.metaTags.themeColor,
           ...(seoSettings.metaTags.appleMobileWebAppTitle && {
