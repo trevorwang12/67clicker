@@ -1,7 +1,20 @@
 // SEO数据服务 - 分离SEO逻辑
 import { DataService } from './data-service'
-import { getCurrentSiteConfig } from '@/config/default-settings'
 import type { Metadata } from 'next'
+
+const getCurrentSiteConfig = () => ({
+  siteName: 'Growden',
+  siteDescription: 'Free online games and entertainment',
+  siteUrl: 'https://growden.net',
+  siteLogo: '/favicon.svg',
+  favicon: '/favicon.ico',
+  keywords: ['games', 'online games', 'free games'],
+  author: 'Growden',
+  twitterHandle: '@growden',
+  ogImage: '/og-image.jpg',
+  ogTitle: 'Growden - Free Online Games',
+  ogDescription: 'Play free online games at Growden',
+})
 
 export interface SeoSettings {
   siteName: string
@@ -66,12 +79,12 @@ export class SeoService {
         },
         icons: [
           {
-            url: '/favicon.ico',
+            url: seoSettings.favicon,
             sizes: '32x32',
             type: 'image/x-icon',
           },
           {
-            url: '/favicon.svg',
+            url: seoSettings.siteLogo,
             type: 'image/svg+xml',
           },
           {

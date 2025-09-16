@@ -57,18 +57,23 @@ export default function GameGallery({
   }
 
   const renderImageItem = (image: GameGalleryImage, index: number) => {
+    // 处理图片路径，如果图片不存在则使用占位图
+    const imageSrc = image.src || '/placeholder.jpg';
+
     const content = (
       <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 h-full">
         <CardContent className="p-0 h-full flex flex-col">
           <div className="aspect-[4/3] overflow-hidden relative flex-shrink-0 bg-gray-100">
             <img
-              src={image.src}
+              src={imageSrc}
               alt={image.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              loading={index < 6 ? "eager" : "lazy"}
+              loading={index < 3 ? "eager" : "lazy"}
               onError={(e) => {
-                const img = e.target as HTMLImageElement
-                img.src = "/placeholder.svg"
+                const target = e.target as HTMLImageElement;
+                if (target.src !== '/placeholder.jpg') {
+                  target.src = '/placeholder.jpg';
+                }
               }}
             />
             {image.gameUrl && (

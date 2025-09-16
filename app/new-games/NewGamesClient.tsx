@@ -21,21 +21,27 @@ export default function NewGamesPage() {
   useEffect(() => {
     // Set client flag to prevent hydration mismatch
     setIsClient(true)
-    
-    const loadNewGames = () => {
-      setNewGames(dataManager.getNewGames(20))
+
+    const loadNewGames = async () => {
+      try {
+        const games = await dataManager.getNewGames(20)
+        setNewGames(games || [])
+      } catch (error) {
+        console.error('Failed to load new games:', error)
+        setNewGames([])
+      }
     }
-    
+
     loadNewGames()
-    
+
     // Listen for games updates
     const handleGamesUpdate = () => {
       loadNewGames()
     }
-    
+
     window.addEventListener('gamesUpdated', handleGamesUpdate)
     window.addEventListener('storage', handleGamesUpdate)
-    
+
     return () => {
       window.removeEventListener('gamesUpdated', handleGamesUpdate)
       window.removeEventListener('storage', handleGamesUpdate)
@@ -62,7 +68,7 @@ export default function NewGamesPage() {
 
         {/* Games Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {isClient && newGames.map((game, index) => (
+          {isClient && Array.isArray(newGames) && newGames.map((game, index) => (
             <Link key={index} href={`/game/${game.id}`}>
               <Card className="overflow-hidden hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group h-full flex flex-col">
                 <CardContent className="p-0 flex flex-col h-full">

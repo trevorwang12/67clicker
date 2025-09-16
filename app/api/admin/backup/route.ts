@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminResponse, logAdminAccess } from '@/lib/admin-security'
-import { getCurrentSiteConfig } from '@/config/default-settings'
+const getCurrentSiteConfig = () => ({
+  siteName: 'Growden',
+  siteDescription: 'Free online games and entertainment',
+  siteUrl: 'https://growden.net',
+})
 import { promises as fs } from 'fs'
 import path from 'path'
 

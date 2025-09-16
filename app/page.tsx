@@ -133,12 +133,29 @@ export default function HomePage() {
     }
     
     const loadGamesData = async () => {
-      const hotGamesData = await dataManager.getHotGames(8)
-      const newGamesData = await dataManager.getNewGames(8)
-      const allGamesData = await dataManager.getAllGames()
-      setHotGames(hotGamesData)
-      setNewGames(newGamesData)
-      setAllGames(allGamesData)
+      try {
+        // 只调用一次 getAllGames，然后本地过滤
+        const allGamesData = await dataManager.getAllGames()
+
+        // 本地过滤和排序，消除重复API调用
+        const activeGames = allGamesData.filter(game => game.isActive)
+        const hotGamesData = activeGames
+          .sort((a, b) => b.viewCount - a.viewCount)
+          .slice(0, 8)
+        const newGamesData = activeGames
+          .sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime())
+          .slice(0, 8)
+
+        setHotGames(hotGamesData)
+        setNewGames(newGamesData)
+        setAllGames(allGamesData)
+      } catch (error) {
+        console.error('Failed to load games data:', error)
+        // Set empty arrays on error to prevent infinite loading
+        setHotGames([])
+        setNewGames([])
+        setAllGames([])
+      }
     }
     
     const loadHomepageContent = async () => {
@@ -146,10 +163,13 @@ export default function HomePage() {
       setHomepageContent(content)
     }
     
-    loadFeaturedGame()
-    loadGamesData()
-    loadHomepageContent()
-    loadSEOData()
+    // 并行加载所有数据，消除串行等待
+    Promise.all([
+      loadFeaturedGame(),
+      loadGamesData(),
+      loadHomepageContent(),
+      loadSEOData()
+    ])
     
     // 监听featured games更新事件
     const handleFeaturedGamesUpdate = async () => {

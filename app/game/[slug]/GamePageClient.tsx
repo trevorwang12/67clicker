@@ -28,6 +28,8 @@ export default function GamePageClient({ params }: GamePageClientProps) {
   const [loadingTipIndex, setLoadingTipIndex] = useState(0)
   const [isInitialLoading, setIsInitialLoading] = useState(true)
   const [isMounted, setIsMounted] = useState(false)
+  const [hotGames, setHotGames] = useState<any[]>([])
+  const [newGames, setNewGames] = useState<any[]>([])
   
   const loadingTips = [
     "💡 Pro tip: Use arrow keys or WASD for better control!",
@@ -80,6 +82,24 @@ export default function GamePageClient({ params }: GamePageClientProps) {
     }
   }, [gameLoading, loadingTips.length])
 
+  // Load games data in useEffect
+  useEffect(() => {
+    const loadGamesData = async () => {
+      try {
+        const hotGamesData = await dataManager.getHotGames(8)
+        const newGamesData = await dataManager.getNewGames(8)
+        setHotGames(hotGamesData)
+        setNewGames(newGamesData)
+      } catch (error) {
+        console.error('Failed to load games data:', error)
+        setHotGames([])
+        setNewGames([])
+      }
+    }
+
+    loadGamesData()
+  }, [])
+
   // Show loading state during initial load
   if (isInitialLoading) {
     return (
@@ -128,9 +148,6 @@ export default function GamePageClient({ params }: GamePageClientProps) {
     setGameLoading(false)
     setIsPlaying(true)
   }
-
-  const hotGames = dataManager.getHotGames(8)
-  const newGames = dataManager.getNewGames(8)
 
   return (
     <div className="min-h-screen bg-white">
@@ -354,7 +371,7 @@ export default function GamePageClient({ params }: GamePageClientProps) {
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               <h3 className="text-xl font-bold mb-6 text-gray-800">Hot games</h3>
               <div className="grid grid-cols-2 gap-3">
-                {hotGames.map((hotGame, index) => (
+                {Array.isArray(hotGames) && hotGames.length > 0 ? hotGames.map((hotGame, index) => (
                   <Link key={index} href={`/game/${hotGame.id}`} className="group">
                     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow h-full flex flex-col">
                       <div className="aspect-[4/3] overflow-hidden relative flex-shrink-0">
@@ -374,7 +391,11 @@ export default function GamePageClient({ params }: GamePageClientProps) {
                       </div>
                     </div>
                   </Link>
-                ))}
+                )) : (
+                  <div className="col-span-2 text-center py-4">
+                    <div className="text-gray-400 text-sm">Loading hot games...</div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -382,7 +403,7 @@ export default function GamePageClient({ params }: GamePageClientProps) {
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               <h3 className="text-xl font-bold mb-6 text-gray-800">New games 新游戏</h3>
               <div className="grid grid-cols-2 gap-3">
-                {newGames.map((newGame, index) => (
+                {Array.isArray(newGames) && newGames.length > 0 ? newGames.map((newGame, index) => (
                   <Link key={index} href={`/game/${newGame.id}`} className="group">
                     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow h-full flex flex-col">
                       <div className="aspect-[4/3] overflow-hidden relative flex-shrink-0">
@@ -402,7 +423,11 @@ export default function GamePageClient({ params }: GamePageClientProps) {
                       </div>
                     </div>
                   </Link>
-                ))}
+                )) : (
+                  <div className="col-span-2 text-center py-4">
+                    <div className="text-gray-400 text-sm">Loading new games...</div>
+                  </div>
+                )}
               </div>
             </div>
 

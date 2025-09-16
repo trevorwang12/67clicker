@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import GamePageClient from './GamePageClient'
-import gamesData from '@/data/games.json'
+import { DataService } from '@/lib/data-service'
 import { promises as fs } from 'fs'
 import path from 'path'
 
@@ -52,14 +52,19 @@ async function loadSEOSettings() {
   }
 }
 
-function getGameById(gameId: string): GameData | null {
-  const games = gamesData as GameData[]
-  return games.find(game => game.id === gameId && game.isActive) || null
+async function getGameById(gameId: string): Promise<GameData | null> {
+  try {
+    const games = await DataService.getGames()
+    return games.find((game: any) => game.id === gameId && game.isActive) || null
+  } catch (error) {
+    console.error('Failed to load games:', error)
+    return null
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  // 直接从静态数据获取游戏
-  const game = getGameById(params.slug)
+  // 从DataService获取游戏
+  const game = await getGameById(params.slug)
   
   if (!game) {
     return {
@@ -143,8 +148,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function GamePage({ params }: PageProps) {
   // 直接从静态数据获取游戏
-  const game = getGameById(params.slug)
-  
+  const game = await getGameById(params.slug)
+
   if (!game) {
     notFound()
   }
@@ -153,7 +158,7 @@ export default async function GamePage({ params }: PageProps) {
     <>
       {/* 服务端渲染的SEO标签，对搜索引擎可见 */}
       <div style={{ display: 'none' }}>
-        <h1>{game.name}</h1>
+        <h1>{game?.name}</h1>
         <h2>About This Game</h2>
         <h2>Game Features</h2>
       </div>

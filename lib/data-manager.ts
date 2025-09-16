@@ -1,7 +1,7 @@
-import gamesData from '@/data/games.json'
-import categoriesData from '@/data/categories.json'
-import siteSettings from '@/data/site-settings.json'
 import { cacheManager } from './cache-manager'
+
+// Client-side data manager - uses API calls instead of direct imports
+// "Theory and practice sometimes clash. Theory loses. Every single time." - Linus
 
 export interface GameData {
   id: string
@@ -48,9 +48,16 @@ export interface SiteSettings {
 }
 
 class DataManager {
-  private games: GameData[] = gamesData as GameData[]
-  private categories: Category[] = categoriesData as Category[]
-  private settings: SiteSettings = siteSettings as SiteSettings
+  private games: GameData[] = []
+  private categories: Category[] = []
+  private settings: SiteSettings = {
+    siteName: 'Growden',
+    siteDescription: 'Free online games',
+    siteUrl: 'https://growden.net',
+    socialMedia: { facebook: '', twitter: '', instagram: '' },
+    contact: { email: '', phone: '', address: '' },
+    features: { enableUserComments: false, enableGameRatings: true, enableSocialSharing: true }
+  }
   private initialized = false
 
   constructor() {
@@ -112,13 +119,30 @@ class DataManager {
     }
   }
 
-  // Games Management - use cached data, don't hammer API
+  // Games Management - fetch from API, use caching
   async getAllGames(): Promise<GameData[]> {
     const cached = cacheManager.get('all-games')
     if (cached) return cached
 
+    // Only fetch from API if running in browser
+    if (typeof window !== 'undefined') {
+      try {
+        // Fetch from API without limit to get simple array format
+        const response = await fetch('/api/games')
+        if (response.ok) {
+          const data = await response.json()
+          const games = Array.isArray(data) ? data : data.games || []
+          cacheManager.set('all-games', games, 30 * 60 * 1000) // 30 min cache
+          this.games = games // Update local cache
+          return games
+        }
+      } catch (error) {
+        console.warn('Failed to fetch games from API:', error)
+      }
+    }
+
+    // Fallback to existing data
     const result = this.games.filter(game => game.isActive)
-    cacheManager.set('all-games', result, 30 * 60 * 1000) // 30 min cache
     return result
   }
 
@@ -127,6 +151,19 @@ class DataManager {
     const cached = cacheManager.get(cacheKey)
     if (cached) return cached
 
+    try {
+      // Try API first for fresh data
+      const response = await fetch(`/api/games/${id}`)
+      if (response.ok) {
+        const game = await response.json()
+        cacheManager.set(cacheKey, game, 60 * 60 * 1000) // 1 hour cache
+        return game
+      }
+    } catch (error) {
+      console.warn('Failed to fetch game from API:', error)
+    }
+
+    // Fallback to local data
     const result = this.games.find(game => game.id === id && game.isActive) || null
     cacheManager.set(cacheKey, result, 60 * 60 * 1000) // 1 hour cache
     return result
@@ -157,12 +194,15 @@ class DataManager {
     return result
   }
 
-  getHotGames(limit: number = 8): any[] {
+  async getHotGames(limit: number = 8): Promise<any[]> {
     const cacheKey = `hot-games-${limit}`
     const cached = cacheManager.get(cacheKey)
     if (cached) return cached
-    
-    const result = this.games
+
+    // Ensure we have fresh games data
+    const games = await this.getAllGames()
+
+    const result = games
       .filter(game => game.isActive)
       .sort((a, b) => b.viewCount - a.viewCount)
       .slice(0, limit)
@@ -173,17 +213,20 @@ class DataManager {
         viewCount: game.viewCount,
         id: game.id
       }))
-    
+
     cacheManager.set(cacheKey, result, 2 * 60 * 1000)
     return result
   }
 
-  getNewGames(limit: number = 8): any[] {
+  async getNewGames(limit: number = 8): Promise<any[]> {
     const cacheKey = `new-games-${limit}`
     const cached = cacheManager.get(cacheKey)
     if (cached) return cached
-    
-    const result = this.games
+
+    // Ensure we have fresh games data
+    const games = await this.getAllGames()
+
+    const result = games
       .filter(game => game.isActive)
       .sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime())
       .slice(0, limit)
@@ -193,7 +236,7 @@ class DataManager {
         addedDate: game.addedDate,
         id: game.id
       }))
-    
+
     cacheManager.set(cacheKey, result, 5 * 60 * 1000)
     return result
   }

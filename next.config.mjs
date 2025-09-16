@@ -9,9 +9,9 @@ const nextConfig = {
   images: {
     unoptimized: false,
     formats: ['image/avif', 'image/webp'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 86400, // 24 hours cache
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [180, 242, 273, 285, 384, 400],
+    minimumCacheTTL: 86400,
     domains: [],
     remotePatterns: [
       {
@@ -44,7 +44,37 @@ const nextConfig = {
       'lucide-react',
     ],
     serverComponentsExternalPackages: [],
-    // optimizeCss: true, // Disabled due to critters dependency issue on Vercel
+    cssChunking: 'strict',
+  },
+
+  webpack: (config, { isServer }) => {
+    // Split chunks to reduce bundle size
+    if (!isServer) {
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            priority: 10,
+            reuseExistingChunk: true,
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            priority: 5,
+            reuseExistingChunk: true,
+          },
+          radix: {
+            test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
+            name: 'radix',
+            priority: 20,
+            reuseExistingChunk: true,
+          },
+        },
+      }
+    }
+    return config
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',

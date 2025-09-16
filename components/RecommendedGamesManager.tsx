@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Plus, Trash2, ToggleLeft, ToggleRight, ArrowUp, ArrowDown, GripVertical } from "lucide-react"
+import OptimizedImage from '@/components/OptimizedImage'
 import { recommendedGamesManager } from '@/lib/recommended-games-manager'
 import { dataManager, GameData } from '@/lib/data-manager'
 import {
@@ -80,10 +81,12 @@ function SortableRecommendedGame({
       >
         <GripVertical className="w-4 h-4 text-gray-400" />
       </div>
-      <img 
-        src={game.thumbnailUrl || '/placeholder.svg'} 
+      <OptimizedImage
+        src={game.thumbnailUrl || '/placeholder.svg'}
         alt={game.name}
-        className="w-16 h-16 object-cover rounded"
+        className="w-16 h-16 rounded"
+        width={64}
+        height={64}
       />
       <div className="flex-1">
         <h3 className="font-medium">{game.name}</h3>
@@ -381,10 +384,11 @@ export default function RecommendedGamesManager() {
             {mixedRecommendations.map((game) => (
               <div key={game.id} className="bg-white rounded-lg overflow-hidden shadow-sm border">
                 <div className="aspect-square relative">
-                  <img
+                  <OptimizedImage
                     src={game.thumbnailUrl || "/placeholder.svg"}
                     alt={game.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full"
+                    fill={true}
                   />
                 </div>
                 <div className="p-2">

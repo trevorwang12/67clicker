@@ -5,11 +5,13 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './lib/**/*.{js,ts}',
-    './data/**/*.json'
+    './lib/**/*.{js,ts}'
   ],
   future: {
     hoverOnlyWhenSupported: true,
+  },
+  corePlugins: {
+    preflight: true,
   },
   theme: {
     container: {

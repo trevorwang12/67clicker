@@ -86,6 +86,10 @@ export class DataService {
     return this.loadFromFile<any[]>('games.json', [])
   }
 
+  static async getAllGames() {
+    return this.getGames()
+  }
+
   static async getCategories() {
     return this.loadFromFile<any[]>('categories.json', [])
   }

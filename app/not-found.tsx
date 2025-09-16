@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -13,7 +13,26 @@ import YouMightAlsoLike from "@/components/YouMightAlsoLike"
 
 export default function NotFound() {
   const [searchTerm, setSearchTerm] = useState("")
+  const [hotGames, setHotGames] = useState<any[]>([])
+  const [newGames, setNewGames] = useState<any[]>([])
   const router = useRouter()
+
+  useEffect(() => {
+    const loadGames = async () => {
+      try {
+        const hotGamesData = await dataManager.getHotGames(8)
+        const newGamesData = await dataManager.getNewGames(8)
+        setHotGames(hotGamesData)
+        setNewGames(newGamesData)
+      } catch (error) {
+        console.error('Failed to load games:', error)
+        setHotGames([])
+        setNewGames([])
+      }
+    }
+
+    loadGames()
+  }, [])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,9 +40,6 @@ export default function NotFound() {
       router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`)
     }
   }
-
-  const hotGames = dataManager.getHotGames(8)
-  const newGames = dataManager.getNewGames(8)
 
   return (
     <div className="min-h-screen bg-white">
@@ -132,7 +148,7 @@ export default function NotFound() {
               </div>
               
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                {hotGames.map((game, index) => (
+                {Array.isArray(hotGames) && hotGames.length > 0 ? hotGames.map((game, index) => (
                   <Link key={index} href={`/game/${game.id}`} className="group">
                     <Card className="overflow-hidden hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer h-full flex flex-col">
                       <CardContent className="p-0 flex flex-col h-full">
@@ -193,7 +209,11 @@ export default function NotFound() {
                       </CardContent>
                     </Card>
                   </Link>
-                ))}
+                )) : (
+                  <div className="col-span-full text-center py-8">
+                    <div className="text-gray-400 text-lg">Loading hot games...</div>
+                  </div>
+                )}
               </div>
 
               <div className="text-center mt-8">
@@ -213,7 +233,7 @@ export default function NotFound() {
               </div>
               
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                {newGames.map((game, index) => (
+                {Array.isArray(newGames) && newGames.length > 0 ? newGames.map((game, index) => (
                   <Link key={index} href={`/game/${game.id}`} className="group">
                     <Card className="overflow-hidden hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer h-full flex flex-col">
                       <CardContent className="p-0 flex flex-col h-full">
@@ -257,7 +277,11 @@ export default function NotFound() {
                       </CardContent>
                     </Card>
                   </Link>
-                ))}
+                )) : (
+                  <div className="col-span-full text-center py-8">
+                    <div className="text-gray-400 text-lg">Loading new games...</div>
+                  </div>
+                )}
               </div>
 
               <div className="text-center mt-8">

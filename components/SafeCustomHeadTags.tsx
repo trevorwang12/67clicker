@@ -23,8 +23,8 @@ export default async function SafeCustomHeadTags() {
   return (
     <>
       {scriptSrcMatch && (
-        <script 
-          {...(isDeferMatch ? { defer: true } : {})}
+        <script
+          defer={isDeferMatch ? true : undefined}
           data-domain={dataDomainMatch ? dataDomainMatch[1] : "worldguessr.pro"}
           src={scriptSrcMatch[1]}
         />
