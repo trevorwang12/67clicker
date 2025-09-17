@@ -110,10 +110,11 @@ class SitemapManager {
       // Add game pages
       if (settings.includeGamePages) {
         try {
-          const { dataManager } = await import('./data-manager')
-          const games = await dataManager.getAllGames()
-          
-          games.forEach(game => {
+          const gamesPath = path.join(process.cwd(), 'data', 'games.json')
+          const gamesData = JSON.parse(await fs.readFile(gamesPath, 'utf8'))
+          const games = gamesData.filter((game: any) => game.isActive)
+
+          games.forEach((game: any) => {
             const gameUrl = `/game/${game.id}`
             if (!settings.excludeUrls.includes(gameUrl)) {
               urls.push({
