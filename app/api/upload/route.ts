@@ -1,22 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { promises as fs } from 'fs'
+import path from 'path'
+import sharp from 'sharp'
 
-// 支持的图片格式（从环境变量读取，带默认值）
-const ALLOWED_TYPES = (process.env.ALLOWED_IMAGE_TYPES || 'image/jpeg,image/png,image/gif,image/webp').split(',')
-const MAX_FILE_SIZE = parseInt(process.env.UPLOAD_MAX_SIZE || '5242880') // 默认5MB
+// 支持的图片格式
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'admin-token-here'
+const UPLOAD_DIR = path.join(process.cwd(), 'public/uploads')
 
-// 内存中存储上传的文件（Base64格式）
+// WebP压缩质量配置
+const WEBP_QUALITY = 85
+const WEBP_COMPRESSION_LEVEL = 6
+
+// 上传文件信息
 interface UploadedFile {
   id: string
   fileName: string
   originalName: string
-  dataUrl: string  // Base64 data URL
+  url: string  // 文件路径，不是base64
   size: number
   type: string
   uploadDate: string
 }
-
-let uploadedFiles: UploadedFile[] = []
 
 // 生成唯一文件ID
 function generateFileId(): string {
@@ -64,37 +70,44 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 读取文件内容并转换为Base64
+    // 确保上传目录存在
+    await fs.mkdir(UPLOAD_DIR, { recursive: true })
+
+    // 生成唯一文件名（强制使用.webp扩展名）
+    const fileId = generateFileId()
+    const originalName = file.name.replace(/\.[^/.]+$/, '') // 移除原扩展名
+    const webpFileName = `${fileId}-${originalName}.webp`
+    const filePath = path.join(UPLOAD_DIR, webpFileName)
+
+    // 读取文件内容
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    const base64 = buffer.toString('base64')
-    const dataUrl = `data:${file.type};base64,${base64}`
-    
-    // 生成文件信息
-    const fileId = generateFileId()
-    const fileName = generateFileName(file.name)
-    
-    const uploadedFile: UploadedFile = {
-      id: fileId,
-      fileName,
-      originalName: file.name,
-      dataUrl,
-      size: file.size,
-      type: file.type,
-      uploadDate: new Date().toISOString()
-    }
-    
-    // 存储到内存中
-    uploadedFiles.push(uploadedFile)
-    
-    console.log(`File uploaded: ${fileName} (${file.size} bytes) - Base64 storage`)
-    
+
+    // 使用Sharp转换为WebP格式并压缩
+    const webpBuffer = await sharp(buffer)
+      .webp({
+        quality: WEBP_QUALITY,
+        effort: WEBP_COMPRESSION_LEVEL
+      })
+      .toBuffer()
+
+    // 保存WebP文件
+    await fs.writeFile(filePath, webpBuffer)
+
+    // 生成URL路径（相对于public目录）
+    const fileUrl = `/uploads/${webpFileName}`
+
+    console.log(`✅ File converted to WebP: ${webpFileName}`)
+    console.log(`📏 Original size: ${file.size} bytes`)
+    console.log(`📏 WebP size: ${webpBuffer.length} bytes`)
+    console.log(`📉 Compression ratio: ${Math.round((1 - webpBuffer.length / file.size) * 100)}%`)
+
     return NextResponse.json({
       success: true,
-      url: dataUrl,  // 返回Base64 data URL
-      fileName,
-      size: file.size,
-      type: file.type,
+      url: fileUrl,  // 返回文件路径，不是base64
+      fileName: webpFileName,
+      size: webpBuffer.length,
+      type: 'image/webp',
       id: fileId
     })
 
@@ -107,7 +120,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// 获取上传的文件列表（可选功能）
+// 获取上传的文件列表
 export async function GET(request: NextRequest) {
   try {
     // 管理员权限检查
@@ -116,21 +129,30 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // 按上传时间排序（最新的在前）
-    const sortedFiles = [...uploadedFiles].sort((a, b) => 
-      new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime()
-    )
-    
-    const fileInfos = sortedFiles.map(file => ({
-      id: file.id,
-      name: file.fileName,
-      originalName: file.originalName,
-      url: file.dataUrl,
-      size: file.size,
-      type: file.type,
-      uploadDate: file.uploadDate
-    }))
-    
+    // 确保上传目录存在
+    await fs.mkdir(UPLOAD_DIR, { recursive: true })
+
+    // 读取上传目录中的所有文件
+    const files = await fs.readdir(UPLOAD_DIR)
+    const fileInfos = []
+
+    for (const fileName of files) {
+      const filePath = path.join(UPLOAD_DIR, fileName)
+      const stats = await fs.stat(filePath)
+
+      if (stats.isFile()) {
+        fileInfos.push({
+          name: fileName,
+          url: `/uploads/${fileName}`,
+          size: stats.size,
+          uploadDate: stats.mtime.toISOString()
+        })
+      }
+    }
+
+    // 按修改时间排序（最新的在前）
+    fileInfos.sort((a, b) => new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime())
+
     return NextResponse.json({ files: fileInfos })
 
   } catch (error) {

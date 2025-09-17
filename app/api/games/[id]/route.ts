@@ -8,13 +8,14 @@ export async function GET(
   try {
     const gameId = params.id
 
-    // Get all games (cached by DataService)
-    const allGames = await DataService.getAllGames()
+    if (!gameId) {
+      return NextResponse.json({ error: 'Game ID is required' }, { status: 400 })
+    }
 
-    // Find the specific game
-    const game = allGames.find((g: any) => g.id === gameId && g.isActive)
+    // 使用新的按需加载方法，避免加载整个games.json
+    const game = await DataService.getGameById(gameId)
 
-    if (!game) {
+    if (!game || !game.isActive) {
       return NextResponse.json({ error: 'Game not found' }, { status: 404 })
     }
 

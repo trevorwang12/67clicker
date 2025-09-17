@@ -237,7 +237,7 @@ export default function GamesManager() {
       gameUrl: game.gameUrl || '',
       externalUrl: game.externalUrl || '',
       embedCode: game.embedCode || '',
-      controls: game.controls.join(', '),
+      controls: Array.isArray(game.controls) ? game.controls.join(', ') : '',
       platforms: game.platforms,
       languages: game.languages,
       features: game.features,

@@ -140,7 +140,7 @@ export default function HomePage() {
         // 本地过滤和排序，消除重复API调用
         const activeGames = allGamesData.filter(game => game.isActive)
         const hotGamesData = activeGames
-          .sort((a, b) => b.viewCount - a.viewCount)
+          .sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0))
           .slice(0, 8)
         const newGamesData = activeGames
           .sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime())

@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server'
+import { DataService } from '@/lib/data-service'
 
 export async function GET() {
   try {
-    const baseUrl = 'https://takecareofshadowmilk.cc'
+    // 动态获取域名配置
+    const seoSettings = await DataService.getSeoSettings()
+    const baseUrl = seoSettings?.seoSettings?.siteUrl || 'https://growden.net'
     const now = new Date().toISOString().split('T')[0]
     
     // 静态页面

@@ -3,17 +3,19 @@ import { DataService } from '@/lib/data-service'
 
 export async function GET() {
   try {
-    const baseUrl = 'https://takecareofshadowmilk.cc'
+    // 动态获取域名配置
+    const seoSettings = await DataService.getSeoSettings()
+    const baseUrl = seoSettings?.seoSettings?.siteUrl || 'https://growden.net'
     const now = new Date().toISOString().split('T')[0]
-    
+
     // 获取游戏数据
     const games = await DataService.getGames()
     const categories = await DataService.getCategories()
-    
+
     const gameUrls = games
       .filter((game: any) => game.isActive)
       .map((game: any) => ({
-        url: `${baseUrl}/game/${game.slug}`,
+        url: `${baseUrl}/game/${game.id}`, // 修复：使用id而不是slug
         priority: '0.8',
         changefreq: 'weekly'
       }))
@@ -21,7 +23,7 @@ export async function GET() {
     const categoryUrls = categories
       .filter((category: any) => category.isActive)
       .map((category: any) => ({
-        url: `${baseUrl}/category/${category.slug}`,
+        url: `${baseUrl}/category/${category.id}`, // 修复：使用id而不是slug
         priority: '0.7',
         changefreq: 'weekly'
       }))

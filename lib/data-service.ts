@@ -6,7 +6,11 @@ import path from 'path'
 
 export class DataService {
   private static cache = new Map<string, { data: any; timestamp: number }>()
-  private static readonly CACHE_TTL = 5000 // 5 seconds cache
+  private static readonly CACHE_TTL = 300000 // 5 minutes cache - 载荷优化：延长缓存时间
+
+  // 轻量级游戏列表缓存 - 只包含必要字段
+  private static lightGamesCache: any[] | null = null
+  private static lightGamesCacheTime = 0
 
   // 核心方法：统一的文件读取和缓存
   private static async loadFromFile<T>(
@@ -90,6 +94,41 @@ export class DataService {
     return this.getGames()
   }
 
+  // 新增：轻量级游戏列表，只返回必要字段
+  static async getLightweightGames(): Promise<any[]> {
+    const now = Date.now()
+
+    // 检查轻量级缓存
+    if (this.lightGamesCache && now - this.lightGamesCacheTime < this.CACHE_TTL) {
+      return this.lightGamesCache
+    }
+
+    const allGames = await this.getAllGames()
+
+    // 只保留展示所需的最小字段集
+    this.lightGamesCache = allGames.map(game => ({
+      id: game.id,
+      name: game.name,
+      thumbnailUrl: game.thumbnailUrl,
+      category: game.category,
+      tags: game.tags?.slice(0, 3), // 只保留前3个标签
+      rating: game.rating,
+      viewCount: game.viewCount || game.views || 0,
+      addedDate: game.addedDate,
+      isActive: game.isActive,
+      isFeatured: game.isFeatured
+    }))
+
+    this.lightGamesCacheTime = now
+    return this.lightGamesCache
+  }
+
+  // 新增：单个游戏详情（按需加载）
+  static async getGameById(gameId: string): Promise<any | null> {
+    const allGames = await this.getAllGames()
+    return allGames.find(game => game.id === gameId) || null
+  }
+
   static async getCategories() {
     return this.loadFromFile<any[]>('categories.json', [])
   }
@@ -147,5 +186,7 @@ export class DataService {
   // 清除所有缓存
   static clearCache() {
     this.cache.clear()
+    this.lightGamesCache = null
+    this.lightGamesCacheTime = 0
   }
 }

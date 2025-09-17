@@ -7,9 +7,12 @@ export async function GET(request: Request) {
     const limit = searchParams.get('limit')
     const page = searchParams.get('page')
     const category = searchParams.get('category')
+    const lightweight = searchParams.get('lightweight') // 新增：轻量级模式
 
-    // Use DataService for proper file reading and caching
-    const allGames = await DataService.getAllGames()
+    // 优先使用轻量级数据——减少传输量的关键
+    const allGames = lightweight === 'true'
+      ? await DataService.getLightweightGames()
+      : await DataService.getAllGames()
 
     // Filter active games
     let activeGames = allGames.filter((game: any) => game.isActive)
@@ -41,21 +44,8 @@ export async function GET(request: Request) {
       })
     }
 
-    // Return only essential fields for listings
-    const lightweightGames = activeGames.map((game: any) => ({
-      id: game.id,
-      name: game.name,
-      thumbnailUrl: game.thumbnailUrl,
-      category: game.category,
-      tags: game.tags?.slice(0, 3), // Only first 3 tags
-      rating: game.rating,
-      viewCount: game.viewCount || game.views || 0,  // Ensure viewCount field exists
-      addedDate: game.addedDate,  // Required for New games sorting
-      isActive: game.isActive,
-      isFeatured: game.isFeatured
-    }))
-
-    return NextResponse.json(lightweightGames)
+    // 默认返回轻量级数据，已经在DataService中过滤
+    return NextResponse.json(activeGames)
   } catch (error) {
     console.error('Error fetching games:', error)
     return NextResponse.json([], { status: 200 })

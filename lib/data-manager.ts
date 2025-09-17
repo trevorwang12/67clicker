@@ -72,12 +72,12 @@ class DataManager {
 
   private async initializeFromAPI() {
     if (this.initialized) return
-    
+
     try {
-      // Load latest games from API
-      const gamesResponse = await fetch('/api/games', {
+      // Load latest games from API with lightweight parameter
+      const gamesResponse = await fetch('/api/games?lightweight=true', {
         headers: {
-          'Cache-Control': 'no-cache'
+          'Cache-Control': 'max-age=300' // 5分钟缓存，减少重复请求
         }
       })
       if (gamesResponse.ok) {
@@ -90,7 +90,7 @@ class DataManager {
       // Load latest categories from API
       const categoriesResponse = await fetch('/api/categories', {
         headers: {
-          'Cache-Control': 'no-cache'
+          'Cache-Control': 'max-age=600' // 10分钟缓存
         }
       })
       if (categoriesResponse.ok) {
@@ -127,12 +127,12 @@ class DataManager {
     // Only fetch from API if running in browser
     if (typeof window !== 'undefined') {
       try {
-        // Fetch from API without limit to get simple array format
-        const response = await fetch('/api/games')
+        // Fetch lightweight data by default to reduce payload
+        const response = await fetch('/api/games?lightweight=true')
         if (response.ok) {
           const data = await response.json()
           const games = Array.isArray(data) ? data : data.games || []
-          cacheManager.set('all-games', games, 30 * 60 * 1000) // 30 min cache
+          cacheManager.set('all-games', games, 60 * 60 * 1000) // 1小时缓存，载荷优化
           this.games = games // Update local cache
           return games
         }
@@ -481,6 +481,7 @@ export const {
   getGameById,
   getHotGames,
   getNewGames,
+  getRelatedGames,
   searchGames,
   searchGamesSync,
   updateGameViews: updateGameViewCount,

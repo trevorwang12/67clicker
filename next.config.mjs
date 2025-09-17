@@ -45,64 +45,53 @@ const nextConfig = {
     ],
     serverComponentsExternalPackages: [],
     cssChunking: 'strict',
+    // 移除不兼容的特性，专注于已验证的优化
+    optimizeCss: true,
   },
 
   webpack: (config, { isServer }) => {
-    // Split chunks to reduce bundle size
-    if (!isServer) {
-      config.optimization.splitChunks = {
-        chunks: 'all',
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            priority: 10,
-            reuseExistingChunk: true,
-          },
-          common: {
-            name: 'common',
-            minChunks: 2,
-            priority: 5,
-            reuseExistingChunk: true,
-          },
-          radix: {
-            test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
-            name: 'radix',
-            priority: 20,
-            reuseExistingChunk: true,
-          },
-        },
-      }
+    // 简化webpack配置，避免模块解析问题
+    if (process.env.NODE_ENV === 'production' && !isServer) {
+      config.devtool = false
     }
     return config
   },
+
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
     styledComponents: false,
+    // 启用React编译器优化
+    reactRemoveProperties: process.env.NODE_ENV === 'production',
   },
-  
+
   // Bundle analyzer for production optimization
-  // Removed webpack customization to fix CSS being loaded as JS
-  // The custom webpack configuration was causing Next.js to generate
-  // incorrect <script> tags for CSS files instead of <link> tags
   // Performance optimizations
   swcMinify: true,
   poweredByHeader: false,
   compress: true,
-  
+
   // SEO and metadata optimizations
   generateEtags: true,
-  
+
   // Redirects for SEO
   async redirects() {
     return [
       // Add any SEO redirects here if needed
     ]
   },
-  
-  // Headers for SEO optimization
+
+  // Headers for SEO optimization and compression
   async headers() {
     return [
+      {
+        source: '/api/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=300, s-maxage=600' // API缓存优化
+          },
+        ]
+      },
       {
         source: '/(.*)',
         headers: [
