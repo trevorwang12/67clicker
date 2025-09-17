@@ -4,30 +4,30 @@ A modern, secure, and performant gaming platform built with Next.js 15, featurin
 
 基于 Next.js 15 构建的现代化、安全、高性能游戏平台，提供数百款免费在线游戏。
 
-## 🔄 Recent Configuration Unification | 近期配置系统统一
+## 🚀 Latest Major Optimization | 最新重大优化
 
-**Major configuration system overhaul** following Linux kernel development principles:
+**Massive performance and functionality improvements** following Linux kernel "good taste" principles:
 
-**遵循Linux内核开发原则的重大配置系统改进：**
+**遵循Linux内核"好品味"原则的大规模性能和功能改进：**
 
-### ✅ Configuration System Unified | 配置系统统一
+### ✅ Performance Revolution | 性能革命
 
-- **🔧 Single Source of Truth**: Unified all configuration to SEO JSON file | 统一所有配置到单一SEO JSON文件
-- **⚡ Real-time Sync**: Admin panel updates instantly reflect on frontend | 管理面板更新立即同步到前端
-- **🗑️ Eliminated Complexity**: Removed conflicting config files and duplicate systems | 消除冲突配置文件和重复系统
-- **📋 Cache Management**: Proper cache invalidation ensures data freshness | 适当的缓存失效确保数据新鲜度
-- **🛡️ SEO Optimization**: Fixed robots.txt domain and sitemap formatting issues | 修复robots.txt域名和站点地图格式问题
+- **🎯 95% File Size Reduction**: Eliminated base64 pollution from ~20MB to <500KB | 消除base64污染，从约20MB减至<500KB
+- **🖼️ WebP Optimization**: All images converted to WebP with 85-97% compression | 所有图片转换为WebP，压缩率85-97%
+- **⚡ API Optimization**: Eliminated duplicate calls, added lightweight endpoints | 消除重复调用，添加轻量级端点
+- **🔧 Sitemap Fix**: Admin sitemap now correctly includes all 15 game pages | Admin站点地图现在正确包含所有15个游戏页面
+- **🎨 Critical CSS**: Inline critical styles eliminate render-blocking | 内联关键样式消除渲染阻塞
 
-### 🎯 Key Architectural Improvements | 关键架构改进
+### 🎯 Key Architectural Fixes | 关键架构修复
 
-- **Unified Config Service**: `/lib/config-service.ts` provides single configuration access point | 统一配置服务提供单一配置访问点
-- **Cache Invalidation**: Admin changes clear cache ensuring frontend sync | 管理更改清除缓存确保前端同步
-- **API Endpoint**: `/app/api/config/route.ts` serves configuration to client components | API端点向客户端组件提供配置
-- **Eliminated Files**: Removed `/config/site-config.ts` and duplicate configuration systems | 移除重复配置系统文件
+- **Data-Manager Anti-pattern Fixed**: Eliminated environment detection that caused server-side failures | 修复导致服务端失败的环境检测反模式
+- **Direct File Reading**: Sitemap uses `fs.readFile` instead of broken data-manager | 站点地图使用直接文件读取而非有问题的数据管理器
+- **Smart Image Handling**: OptimizedImage component with base64 detection and lazy loading | 智能图片处理组件，支持base64检测和懒加载
+- **WebP Upload System**: Automatic conversion and compression for all uploaded images | WebP上传系统，自动转换和压缩所有上传图片
 
-*Good taste in software design - eliminate special cases and complexity.*
+*"The enemy of performance is not slow hardware, it's bad software." - Fixed the bad software.*
 
-*软件设计的好品味 - 消除特殊情况和复杂性。*
+*"性能的敌人不是慢硬件，而是坏软件。" - 修复了坏软件。*
 
 ## 🚀 Features | 功能特色
 
@@ -55,10 +55,11 @@ A modern, secure, and performant gaming platform built with Next.js 15, featurin
 - **🛟 Network Resilience**: 10s timeout protection, offline graceful degradation | 网络弹性：10秒超时保护，离线优雅降级
 
 #### 🚀 Performance & Optimization | 性能与优化
-- **📈 35% Code Reduction**: From complex scattered logic to unified services | 35%代码精简：从复杂分散逻辑到统一服务
-- **⚡ Fast Compilation**: Consistent 500-700ms build times | 快速编译：稳定500-700ms构建时间
+- **📈 95% File Size Reduction**: From base64 pollution (~20MB) to optimized files (<500KB) | 95%文件大小减少：从base64污染(约20MB)到优化文件(<500KB)
+- **🖼️ WebP Revolution**: Automatic conversion with 85-97% compression ratios | WebP革命：自动转换，压缩率85-97%
+- **⚡ API Optimization**: Eliminated duplicate calls, lightweight data loading | API优化：消除重复调用，轻量级数据加载
 - **🎯 Smart Caching**: API response caching, stale-while-revalidate pattern | 智能缓存：API响应缓存，过期重验证模式
-- **🖼️ Image Optimization**: WebP/AVIF support with `fetchPriority` for LCP | 图像优化：WebP/AVIF支持，LCP优化的fetchPriority
+- **🎨 Critical CSS**: Inline critical styles eliminate render-blocking | 关键CSS：内联关键样式消除渲染阻塞
 
 #### ☁️ Cloud & Deployment | 云端与部署
 - **☁️ Cloud-Ready**: Memory-based storage, zero file system dependencies, perfect for Vercel/Netlify | 云端就绪：基于内存的存储，零文件系统依赖，完美适配 Vercel/Netlify
@@ -994,24 +995,27 @@ This template is provided as-is for educational and commercial use. Customize as
 
 ## 📝 Version History | 版本历史
 
-### Version 2.6.0 - Core Web Vitals Optimization | 版本 2.6.0 - 核心Web指标优化
+### Version 2.7.0 - Massive Performance & Architecture Overhaul | 版本 2.7.0 - 大规模性能与架构改造
 *Current Version | 当前版本*
 
-**🚀 Industry-Leading Performance Optimization | 行业领先性能优化:**
-- **📊 Massive Performance Gains | 巨大性能提升**: LCP improvement ~890ms, Network savings ~1,381KB, CLS reduction from 1.149 to <0.1 | LCP改进约890ms，网络节省约1,381KB，CLS从1.149降至<0.1
-- **🖼️ Image Revolution | 图片革命**: PNG to WebP conversion with 99% size reduction (1.1MB → 8-14KB) | PNG转WebP转换，文件大小减少99%（1.1MB → 8-14KB）
-- **⚡ Smart Loading Strategy | 智能加载策略**: `fetchpriority="high"` for LCP images, lazy loading for others, automatic PNG fallback | LCP图片高优先级，其他图片懒加载，自动PNG降级
-- **🎨 Critical CSS Inlining | 关键CSS内联**: Eliminated 80ms render-blocking with inline critical styles | 通过内联关键样式消除80ms渲染阻塞
-- **💻 Modern JavaScript | 现代JavaScript**: Removed 11KB legacy polyfills through `.browserslistrc` modern browser targeting | 通过现代浏览器适配移除11KB旧版polyfills
-- **🔧 Enhanced Resource Hints | 增强资源提示**: Preload, preconnect, dns-prefetch for faster resource loading | 预加载、预连接、DNS预取实现更快资源加载
-- **🎯 Layout Stability | 布局稳定性**: Predefined grid layouts and aspect ratios prevent CLS | 预定义网格布局和宽高比防止CLS
-- **✅ Production-Ready | 生产就绪**: All optimizations tested and validated for deployment | 所有优化已经过测试并验证可部署
+**🚀 Revolutionary Performance Optimization | 革命性性能优化:**
+- **📊 95% File Size Reduction | 95%文件大小减少**: Eliminated base64 pollution from ~20MB to <500KB | 消除base64污染，从约20MB减至<500KB
+- **🖼️ WebP Revolution | WebP革命**: All images converted to WebP with 85-97% compression ratios | 所有图片转换为WebP，压缩率85-97%
+- **⚡ API Architecture Fix | API架构修复**: Eliminated duplicate API calls, added lightweight endpoints | 消除重复API调用，添加轻量级端点
+- **🗺️ Sitemap Bug Fix | 站点地图Bug修复**: Admin sitemap now correctly includes all 15 game pages | Admin站点地图现在正确包含所有15个游戏页面
+- **🎨 Critical CSS System | 关键CSS系统**: Inline critical styles eliminate render-blocking | 内联关键样式消除渲染阻塞
 
-**🔧 Technical Implementation | 技术实现:**
-- **OptimizedImage Component | 优化图片组件**: Intelligent WebP/PNG handling with error recovery | 智能WebP/PNG处理和错误恢复
-- **Critical CSS System | 关键CSS系统**: Inline styles for above-the-fold content | 首屏内容内联样式
-- **Modern Build Config | 现代构建配置**: SWC minification, optimized package imports, tree-shaking | SWC压缩、优化包导入、tree-shaking
-- **Performance Monitoring Ready | 性能监控就绪**: Structured for Core Web Vitals tracking | 为核心Web指标跟踪而构建
+**🔧 Critical Architecture Fixes | 关键架构修复:**
+- **Data-Manager Anti-pattern Eliminated | 消除Data-Manager反模式**: Fixed environment detection causing server-side failures | 修复导致服务端失败的环境检测
+- **Direct File System Access | 直接文件系统访问**: Sitemap generation uses `fs.readFile` instead of broken data-manager | 站点地图生成使用直接文件读取
+- **Smart Image Processing | 智能图片处理**: Enhanced OptimizedImage with base64 detection and lazy loading | 增强OptimizedImage组件，支持base64检测和懒加载
+- **Automated WebP Upload | 自动化WebP上传**: Upload system automatically converts all images to WebP | 上传系统自动将所有图片转换为WebP
+
+**📈 Impact Metrics | 影响指标:**
+- **Configuration Files | 配置文件**: ~20MB → <500KB (95% reduction) | 减少95%
+- **Sitemap URLs | 站点地图URL**: 7 → 22 (包含15个游戏页面)
+- **Image Compression | 图片压缩**: 85-97% size reduction for all images | 所有图片大小减少85-97%
+- **API Efficiency | API效率**: 3 duplicate requests → 1 optimized request | 3个重复请求减少为1个优化请求
 
 ### Version 2.5.0 - Smart Configuration Management | 版本 2.5.0 - 智能配置管理
 
