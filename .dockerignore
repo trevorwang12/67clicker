@@ -5,11 +5,15 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Local development
+# Local env files
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Next.js build output
+.next/
+out/
 
 # Testing
 coverage
@@ -22,14 +26,13 @@ __tests__
 jest.config.js
 jest.config.mjs
 
-# IDE and Editor files
+# IDE files
 .vscode
 .idea
 *.swp
 *.swo
-*.tmp
 
-# OS generated files
+# OS files
 .DS_Store
 .DS_Store?
 ._*
@@ -38,32 +41,27 @@ jest.config.mjs
 ehthumbs.db
 Thumbs.db
 
-# Next.js build output (let Vercel handle this)
-.next
-out
-
-# Debug logs
-*.log
-
-# Documentation and development files
-README.md
-CHANGELOG.md
-docs/
-*.md
-
 # Git files
 .git
 .gitignore
-.gitattributes
 
-# Development scripts
+# Documentation
+README.md
+docs/
+*.md
+
+# Development tools
 scripts/
 tools/
 
-# Cache directories
+# Cache
 .cache
 .parcel-cache
 
 # Temporary files
 tmp/
 temp/
+
+# Playwright
+playwright-report/
+test-results/
