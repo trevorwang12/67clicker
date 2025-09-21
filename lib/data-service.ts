@@ -140,17 +140,17 @@ export class DataService {
   static async getSeoSettings() {
     const defaultSettings = {
       seoSettings: {
-        siteName: 'GAMES',
-        siteDescription: 'Best Online Gaming Platform - Play hundreds of free browser games',
-        siteUrl: 'https://yourgamesite.com',
-        siteLogo: '/placeholder-logo.png',
+        siteName: '67 Clicker - Gaming Platform',
+        siteDescription: 'The Ultimate Number-Clicking Adventure That Combines Fun with Strategic Thinking.',
+        siteUrl: 'https://67clickers.online',
+        siteLogo: '/favicon.svg',
         favicon: '/favicon.ico',
-        keywords: ['online games', 'browser games', 'free games'],
-        author: 'Gaming Platform',
-        twitterHandle: '@yourgames',
+        keywords: ['67Clicker', 'browser games', 'free games', 'casual games'],
+        author: '67Clicker',
+        twitterHandle: '@67clicker',
         ogImage: '/og-image.png',
-        ogTitle: 'GAMES - Best Free Online Games',
-        ogDescription: 'Play the best free online games. No download required!',
+        ogTitle: '67 Clicker - Gaming Platform',
+        ogDescription: 'The Ultimate Number-Clicking Adventure That Combines Fun with Strategic Thinking.',
         metaTags: {
           viewport: 'width=device-width, initial-scale=1.0',
           themeColor: '#475569'
