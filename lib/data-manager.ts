@@ -51,9 +51,9 @@ class DataManager {
   private games: GameData[] = []
   private categories: Category[] = []
   private settings: SiteSettings = {
-    siteName: 'Growden',
+    siteName: '67Clicker',
     siteDescription: 'Free online games',
-    siteUrl: 'https://growden.net',
+    siteUrl: 'https://67clickers.online',
     socialMedia: { facebook: '', twitter: '', instagram: '' },
     contact: { email: '', phone: '', address: '' },
     features: { enableUserComments: false, enableGameRatings: true, enableSocialSharing: true }
@@ -448,18 +448,18 @@ class DataManager {
     const response = await fetch(`/api/admin/games?id=${gameId}`, {
       method: 'DELETE'
     })
-    
+
     if (response.ok) {
-      // Update local games array immediately - mark as inactive instead of removing
+      // Update local games array immediately - remove the game completely
       const gameIndex = this.games.findIndex(g => g.id === gameId)
       if (gameIndex !== -1) {
-        this.games[gameIndex].isActive = false
+        this.games.splice(gameIndex, 1)
       }
-      
+
       this.clearCache()
       this.dispatchUpdateEvent()
     }
-    
+
     return response.ok
   }
 

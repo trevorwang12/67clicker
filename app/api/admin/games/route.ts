@@ -109,31 +109,32 @@ export async function DELETE(request: NextRequest) {
     logAdminAccess('/api/admin/games', false)
     return NextResponse.json(adminCheck, { status: adminCheck.status })
   }
-  
+
   try {
     logAdminAccess('/api/admin/games', true)
     // Load latest data from file before making changes
     gamesData = await loadFromFile()
-    
+
     const { searchParams } = new URL(request.url)
     const gameId = searchParams.get('id')
-    
+
     if (!gameId) {
       return NextResponse.json({ error: 'Game ID is required' }, { status: 400 })
     }
-    
+
     const gameIndex = gamesData.findIndex(g => g.id === gameId)
-    
+
     if (gameIndex === -1) {
       return NextResponse.json({ error: 'Game not found' }, { status: 404 })
     }
-    
-    // Mark as inactive instead of removing
-    gamesData[gameIndex].isActive = false
+
+    // Remove the game completely
+    gamesData.splice(gameIndex, 1)
     await saveToFile(gamesData)
-    
+
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error('Failed to delete game:', error)
     return NextResponse.json({ error: 'Failed to delete game' }, { status: 500 })
   }
 }

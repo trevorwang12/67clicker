@@ -1,0 +1,75 @@
+# Dokploy 部署配置文件
+# 67Clicker Next.js 游戏网站部署
+version: '1.0'
+
+application:
+  name: "67clicker"
+  description: "67Clicker Gaming Platform - Next.js website with game collection"
+
+  # 构建配置
+  build:
+    provider: "nixpacks"  # 使用 Nixpacks 自动检测和构建
+    buildCommand: "npm run build"
+    startCommand: "npm start"
+
+  # 运行时配置
+  runtime:
+    port: 3000
+    healthCheck:
+      path: "/api/health"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 环境变量
+  environment:
+    NODE_ENV: "production"
+    PORT: "3000"
+    # 添加你的自定义环境变量
+    # NEXT_PUBLIC_SITE_URL: "https://yourdomain.com"
+
+  # 资源限制
+  resources:
+    memory: "1GB"
+    cpu: "0.5"
+
+  # 域名配置
+  domains:
+    - host: "67clickers.online"
+      https: true
+      redirectToHttps: true
+    - host: "www.67clickers.online"
+      https: true
+      redirectToHttps: true
+      redirect: "67clickers.online"
+
+  # 持久化存储（用于上传文件和数据）
+  volumes:
+    - source: "./public/uploads"
+      target: "/app/public/uploads"
+      type: "persistent"
+    - source: "./data"
+      target: "/app/data"
+      type: "persistent"
+
+  # 网络和安全配置
+  security:
+    allowedOrigins:
+      - "https://67clickers.online"
+      - "https://www.67clickers.online"
+    headers:
+      - "X-Frame-Options: SAMEORIGIN"
+      - "X-Content-Type-Options: nosniff"
+      - "X-XSS-Protection: 1; mode=block"
+
+  # 缓存配置
+  cache:
+    static:
+      maxAge: "1y"
+      patterns:
+        - "/_next/static/**"
+        - "/uploads/**"
+    api:
+      maxAge: "5m"
+      patterns:
+        - "/api/**"

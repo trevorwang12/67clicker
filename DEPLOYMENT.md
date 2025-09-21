@@ -1,14 +1,38 @@
-# growden Deployment Guide
+# 67Clicker Deployment Guide
 
-Complete guide for deploying Clashle to various cloud platforms.
+Complete guide for deploying 67Clicker to various cloud platforms.
 
 ## 🚀 Quick Deploy
 
-### Vercel (Recommended)
+### Dokploy (Recommended for Self-Hosting)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+Dokploy provides a simple, self-hosted alternative to Vercel with full control.
 
-1. **Click the Deploy button above**
+1. **Run deployment preparation**:
+   ```bash
+   ./deploy.sh
+   ```
+
+2. **Configure environment variables**:
+   ```bash
+   cp .env.production.template .env.production
+   # Edit .env.production with your values
+   ```
+
+3. **Deploy to Dokploy**:
+   - Push code to Git repository
+   - Connect repository in Dokploy panel
+   - Use `dokploy.yml` configuration
+   - Set environment variables in panel
+   - Deploy application
+
+4. **Health check**: Monitor at `/api/health`
+
+### Vercel (Cloud Hosting)
+
+Manual deployment setup required for custom configuration.
+
+1. **Setup your repository on Vercel**
 2. **Connect your Git repository**
 3. **Set environment variables**:
    ```bash
@@ -52,10 +76,10 @@ ADMIN_KEY=your-secure-random-key-here
 ### Optional Variables
 
 ```bash
-# SEO Configuration  
-NEXT_PUBLIC_SITE_NAME=Clashle
-NEXT_PUBLIC_DEFAULT_TITLE=Clashle - Guess the Clash Royale Card
-NEXT_PUBLIC_DEFAULT_DESCRIPTION=Daily Clash Royale word puzzle game
+# SEO Configuration
+NEXT_PUBLIC_SITE_NAME=67Clicker
+NEXT_PUBLIC_DEFAULT_TITLE=67Clicker - Gaming Platform
+NEXT_PUBLIC_DEFAULT_DESCRIPTION=Modern gaming platform with premium experience
 
 # Analytics
 NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
@@ -170,10 +194,10 @@ vercel logs --follow
 ## 📊 Post-Deployment Checklist
 
 - [ ] **Site loads correctly** at production URL
-- [ ] **Daily puzzle works** and displays properly  
-- [ ] **Keyboard input functions** for desktop users
+- [ ] **Games load and display properly**
+- [ ] **Navigation and search function** correctly
 - [ ] **Mobile experience** is smooth and responsive
-- [ ] **Sharing functionality** works correctly
+- [ ] **Admin panel** behaves as expected
 - [ ] **Admin panel** behaves as expected (enabled/disabled)
 - [ ] **Custom domain** (if applicable) resolves correctly
 - [ ] **SSL certificate** is active and working

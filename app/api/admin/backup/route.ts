@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminResponse, logAdminAccess } from '@/lib/admin-security'
 const getCurrentSiteConfig = () => ({
-  siteName: 'Growden',
-  siteDescription: 'Free online games and entertainment',
-  siteUrl: 'https://growden.net',
+  siteName: '67Clicker',
+  siteDescription: 'Modern gaming platform with premium experience',
+  siteUrl: 'https://67clickers.online',
 })
 import { promises as fs } from 'fs'
 import path from 'path'

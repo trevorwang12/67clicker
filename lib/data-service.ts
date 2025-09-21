@@ -133,6 +133,10 @@ export class DataService {
     return this.loadFromFile<any[]>('categories.json', [])
   }
 
+  static async getFeaturedGames() {
+    return this.loadFromFile<any[]>('featured-games.json', [])
+  }
+
   static async getSeoSettings() {
     const defaultSettings = {
       seoSettings: {

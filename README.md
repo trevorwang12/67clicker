@@ -1,8 +1,8 @@
-# Growden - Gaming Platform
+# 67Clicker - Gaming Platform
 
-A modern, secure, and performant gaming platform built with Next.js 15, featuring hundreds of free online games.
+一个全新的现代化游戏平台项目，基于 Next.js 15 构建，提供优质的在线游戏体验。
 
-基于 Next.js 15 构建的现代化、安全、高性能游戏平台，提供数百款免费在线游戏。
+A fresh modern gaming platform project built with Next.js 15, providing premium online gaming experience.
 
 ## 🚀 Latest Major Optimization | 最新重大优化
 
@@ -170,10 +170,10 @@ gametemplate/
 
 ### Quick Start | 快速开始
 
-1. **Clone the project | 克隆项目**
+1. **Setup project | 项目设置**
    ```bash
-   git clone https://github.com/trevorwang12/Growden.git
-   cd Growden
+   # 项目已就绪，直接开始开发
+   # Project is ready for development
    ```
 
 2. **Install dependencies | 安装依赖**
@@ -456,8 +456,9 @@ This template has been **fully optimized for cloud deployment** with zero file s
 
 #### **1. Vercel (Recommended) | Vercel（推荐）**
 
-**One-click Deploy:**
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+**Manual Deploy:**
+部署前请先配置好项目设置
+Please configure project settings before deployment
 
 **Manual Setup:**
 ```bash
@@ -476,8 +477,9 @@ ADMIN_TOKEN=your-secure-api-token
 
 #### **2. Netlify Deployment | Netlify 部署**
 
-**One-click Deploy:**
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start)
+**Manual Deploy:**
+部署前请先配置好项目设置
+Please configure project settings before deployment
 
 **Manual Setup:**
 ```bash
@@ -594,8 +596,8 @@ npm start
 ```
 
 ### **Recommended Deployment Flow | 推荐部署流程**
-1. **Fork/Clone** this repository | Fork/克隆此仓库
-2. **Configure** environment variables | 配置环境变量  
+1. **Setup** your repository | 设置你的代码仓库
+2. **Configure** environment variables | 配置环境变量
 3. **Deploy** to chosen platform | 部署到选择的平台
 4. **Access** admin panel and customize | 访问管理面板并自定义
 5. **Launch** your gaming site! | 启动你的游戏网站！

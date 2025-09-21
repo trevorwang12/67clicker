@@ -1,13 +1,13 @@
 {
   "seoSettings": {
     "id": "main-seo-settings",
-    "siteName": "Growden.io Free Play Grow A Garden ",
-    "siteDescription": "Grow a Garden in Growden.io! You can grow a garden of your dreams and unlock pets to help you grow a garden. ",
-    "siteUrl": "https://growden.net",
-    "siteLogo": "/uploads/seo-settings-1758076728367-dmso2v.webp",
-    "favicon": "/uploads/seo-settings-1758076728387-ppc06e.webp",
+    "siteName": "67 Clicker - Gaming Platform",
+    "siteDescription": "The Ultimate Number-Clicking Adventure That Combines Fun with Strategic Thinking.",
+    "siteUrl": "https://67clickers.online",
+    "siteLogo": "/uploads/1758420006238-nyyw5t-PixPin_2025-09-20_22-24-27.webp",
+    "favicon": "/uploads/1758420009098-yy89nx-PixPin_2025-09-20_22-24-27.webp",
     "keywords": [
-      "Growden",
+      "67Clicker",
       "browser games",
       "free games",
       "HTML5 games",
@@ -15,17 +15,17 @@
       "casual games"
     ],
     "author": "",
-    "twitterHandle": "Grow a Garden in Growden.io!",
-    "ogImage": "/uploads/seo-settings-1758076728418-n6pqm6.webp",
-    "ogTitle": "Growden.io- Best Free Online Games",
-    "ogDescription": "Grow a Garden in Growden.io!",
-    "robotsTxt": "User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\n\nSitemap:https://growden.net/sitemap.xml",
+    "twitterHandle": "@67clicker",
+    "ogImage": "/uploads/1758420012871-rqb9s4-PixPin_2025-09-20_22-24-27.webp",
+    "ogTitle": "67 Clicker - Gaming Platform",
+    "ogDescription": "The Ultimate Number-Clicking Adventure That Combines Fun with Strategic Thinking.",
+    "robotsTxt": "User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\n\nSitemap:https://67clickers.online/sitemap.xml",
     "structuredData": {
       "enabled": true,
       "organizationType": "WebSite",
-      "organizationName": "Growden.io",
-      "organizationUrl": "https://Growden.net",
-      "organizationLogo": "/uploads/seo-settings-1758076728435-bs1vp8.webp",
+      "organizationName": "67Clicker",
+      "organizationUrl": "https://67clickers.online",
+      "organizationLogo": "/uploads/1758419982707-1vtw14-PixPin_2025-09-20_22-24-27.webp",
       "sameAs": []
     },
     "metaTags": {
@@ -35,10 +35,10 @@
       "appleMobileWebAppCapable": "yes"
     },
     "createdAt": "2025-08-29T11:10:41.564Z",
-    "updatedAt": "2025-09-16T14:36:17.415Z",
-    "canonicalUrl": "https://growden.net",
+    "updatedAt": "2025-09-21T03:16:41.441Z",
+    "canonicalUrl": "https://67clickers.online",
     "googleAnalyticsId": "",
-    "customHeadTags": "<script defer data-domain=\"growden.net\" src=\"https://plausibleonline.top/js/script.hash.js\"></script>\n<script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>\n"
+    "customHeadTags": "<script defer data-domain=\"67clickers.online\" src=\"https://plausibleonline.top/js/script.js\"></script>\n<script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>\n\n"
   },
   "gamePageSEO": {
     "titleTemplate": "{gameName} - Play Free Online | {siteName}",

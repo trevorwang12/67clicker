@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Plus, Edit, Trash2, Search, Eye, Play, CheckCircle, XCircle, Clock } from "lucide-react"
+import { Plus, Edit, Trash2, Search, Eye, Play, CheckCircle, XCircle, Clock, RefreshCw } from "lucide-react"
 import { dataManager, GameData, Category, getAllCategoriesSync } from "@/lib/data-manager"
 import { sanitizeInput, validateGameData, generateSecureId, rateLimiter } from "@/lib/security"
 import ImageUploader from "@/components/ImageUploader"
@@ -75,6 +75,7 @@ export default function GamesManager() {
   const [loading, setLoading] = useState(true)
   const [linkStatuses, setLinkStatuses] = useState<{[key: string]: 'checking' | 'success' | 'error'}>({})
   const [showBatchCheck, setShowBatchCheck] = useState(false)
+  const [deletingGames, setDeletingGames] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     loadData()
@@ -248,8 +249,16 @@ export default function GamesManager() {
   }
 
   const handleDelete = async (gameId: string) => {
+    // 防止重复点击
+    if (deletingGames.has(gameId)) {
+      return
+    }
+
     if (confirm('Are you sure you want to delete this game?')) {
       try {
+        // 标记正在删除
+        setDeletingGames(prev => new Set(prev).add(gameId))
+
         const success = await dataManager.deleteGame(gameId)
         if (success) {
           showAlert('success', 'Game deleted successfully!')
@@ -260,6 +269,13 @@ export default function GamesManager() {
       } catch (error) {
         console.error('Error deleting game:', error)
         showAlert('error', 'An error occurred while deleting the game')
+      } finally {
+        // 清除删除状态
+        setDeletingGames(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(gameId)
+          return newSet
+        })
       }
     }
   }
@@ -737,8 +753,17 @@ export default function GamesManager() {
                     <Button size="sm" variant="outline" onClick={() => handleEdit(game)}>
                       <Edit className="w-4 h-4" />
                     </Button>
-                    <Button size="sm" variant="outline" onClick={() => handleDelete(game.id)}>
-                      <Trash2 className="w-4 h-4" />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleDelete(game.id)}
+                      disabled={deletingGames.has(game.id)}
+                    >
+                      {deletingGames.has(game.id) ? (
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
                     </Button>
                   </div>
                 </div>

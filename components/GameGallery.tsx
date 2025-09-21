@@ -35,6 +35,15 @@ export default function GameGallery({
 }: GameGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
+  // 调试信息
+  console.log('GameGallery props:', {
+    title,
+    imagesCount: images?.length,
+    columns,
+    displayMode,
+    images: images?.map(img => ({ id: img.id, title: img.title }))
+  })
+
   if (!images || images.length === 0) {
     return null
   }
@@ -51,7 +60,7 @@ export default function GameGallery({
     switch (columns) {
       case 2: return 'grid-cols-1 sm:grid-cols-2'
       case 3: return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-      case 4: return 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-2' // 2x2 layout for 4 columns
+      case 4: return 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4' // 4 columns layout for all 4 images
       default: return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
     }
   }
@@ -71,6 +80,7 @@ export default function GameGallery({
               loading={index < 3 ? "eager" : "lazy"}
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
+                console.log('Image load error for:', image.src);
                 if (target.src !== '/placeholder.jpg') {
                   target.src = '/placeholder.jpg';
                 }
@@ -131,7 +141,7 @@ export default function GameGallery({
 
         {/* Content */}
         {displayMode === 'grid' ? (
-          <div className={`grid ${getGridCols()} gap-6 ${columns === 4 ? 'max-w-4xl mx-auto' : ''}`}>
+          <div className={`grid ${getGridCols()} gap-6 ${columns === 4 ? 'max-w-6xl mx-auto' : ''}`}>
             {(columns === 4 ? images.slice(0, 4) : images).map((image, index) => renderImageItem(image, index))}
           </div>
         ) : (

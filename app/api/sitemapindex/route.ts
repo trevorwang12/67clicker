@@ -6,7 +6,7 @@ export async function GET() {
   try {
     // 动态获取域名配置
     const seoSettings = await DataService.getSeoSettings()
-    const baseUrl = seoSettings?.seoSettings?.siteUrl || 'https://growden.net'
+    const baseUrl = seoSettings?.seoSettings?.siteUrl || 'https://67clickers.online'
     const now = new Date().toISOString().split('T')[0]
 
     // 生成sitemap索引，包含所有子sitemap

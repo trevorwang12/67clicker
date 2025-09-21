@@ -36,7 +36,7 @@ class SitemapManager {
 
   private getDefaultSettings(): SitemapSettings {
     return {
-      baseUrl: 'https://growden.net',
+      baseUrl: 'https://67clickers.online',
       defaultChangeFreq: 'weekly',
       defaultPriority: 0.5,
       includeStaticPages: true,

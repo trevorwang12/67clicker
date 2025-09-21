@@ -48,14 +48,11 @@ function optimizeGameData(game: any) {
 export async function GET() {
   try {
     // 并行获取数据，减少等待时间
-    const [lightGames, homepageContent] = await Promise.all([
+    const [lightGames, homepageContent, featuredGames] = await Promise.all([
       DataService.getLightweightGames(),
-      DataService.getHomepageContent()
+      DataService.getHomepageContent(),
+      DataService.getFeaturedGames()
     ])
-
-    // 单独获取优化版featured games
-    const featuredGamesResponse = await fetch(`http://localhost:3002/api/featured-games-optimized`)
-    const featuredGames = featuredGamesResponse.ok ? await featuredGamesResponse.json() : []
 
     const activeGames = lightGames.filter(game => game.isActive)
 

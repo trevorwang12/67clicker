@@ -3,17 +3,17 @@ import { DataService } from './data-service'
 import type { Metadata } from 'next'
 
 const getCurrentSiteConfig = () => ({
-  siteName: 'Growden',
+  siteName: '67Clicker',
   siteDescription: 'Free online games and entertainment',
-  siteUrl: 'https://growden.net',
+  siteUrl: 'https://67clickers.online',
   siteLogo: '/favicon.svg',
   favicon: '/favicon.ico',
   keywords: ['games', 'online games', 'free games'],
-  author: 'Growden',
-  twitterHandle: '@growden',
+  author: '67Clicker',
+  twitterHandle: '@67clicker',
   ogImage: '/og-image.jpg',
-  ogTitle: 'Growden - Free Online Games',
-  ogDescription: 'Play free online games at Growden',
+  ogTitle: '67Clicker - Gaming Platform',
+  ogDescription: 'Modern gaming platform with premium experience',
 })
 
 export interface SeoSettings {

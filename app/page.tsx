@@ -162,6 +162,7 @@ export default function HomePage() {
       const content = await homepageManager.getContent()
       setHomepageContent(content)
     }
+
     
     // 并行加载所有数据，消除串行等待
     Promise.all([
@@ -225,6 +226,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-white">
       {/* SEO Head Component */}
       <SEOHead pageType="home" />
+
       
       {/* Header */}
       <Header />

@@ -72,8 +72,16 @@ export default function OptimizedImage({
     }
   }, [src, isLargeBase64, isInView])
 
-  // Convert PNG to WebP if available (but not for base64)
-  const optimizedSrc = !isBase64 ? imgSrc.replace(/\.png$/i, '.webp') : imgSrc
+  // Convert to WebP if available (but not for base64)
+  const getOptimizedSrc = (originalSrc: string) => {
+    if (isBase64) return originalSrc
+
+    // Try to convert various formats to WebP
+    return originalSrc
+      .replace(/\.(png|jpg|jpeg)$/i, '.webp')
+  }
+
+  const optimizedSrc = getOptimizedSrc(imgSrc)
 
   const handleError = () => {
     if (!hasError && optimizedSrc !== imgSrc && !isBase64) {

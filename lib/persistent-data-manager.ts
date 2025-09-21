@@ -1,21 +1,12 @@
-// Persistent Data Manager with GitHub Storage
-// 持久化数据管理器（GitHub存储）
+// Persistent Data Manager with Local File Storage
+// 持久化数据管理器（本地文件存储）
 
-import { githubStorage } from './github-storage'
 import { promises as fs } from 'fs'
 import path from 'path'
 
 class PersistentDataManager {
   async loadData<T>(fileName: string, defaultData?: T): Promise<T | null> {
     try {
-      // Try loading from GitHub first (production)
-      const githubData = await githubStorage.loadData(fileName)
-      if (githubData) {
-        console.log(`${fileName} loaded from GitHub`)
-        return githubData as T
-      }
-
-      // Fallback to local file system (development)
       const filePath = path.join(process.cwd(), 'data', fileName)
       const fileContent = await fs.readFile(filePath, 'utf8')
       const localData = JSON.parse(fileContent)
@@ -29,15 +20,12 @@ class PersistentDataManager {
 
   async saveData<T>(fileName: string, data: T): Promise<boolean> {
     try {
-      // Try saving to GitHub first (production)
-      const success = await githubStorage.saveData(fileName, data)
-      if (success) {
-        console.log(`${fileName} saved to GitHub successfully`)
-        return true
-      }
-
-      // Fallback to local file system (development)
       const filePath = path.join(process.cwd(), 'data', fileName)
+
+      // Ensure data directory exists
+      const dataDir = path.dirname(filePath)
+      await fs.mkdir(dataDir, { recursive: true })
+
       await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf8')
       console.log(`${fileName} saved to local file:`, filePath)
       return true
@@ -48,13 +36,10 @@ class PersistentDataManager {
   }
 
   isProductionMode(): boolean {
-    return process.env.NODE_ENV === 'production' && githubStorage.isConfigured()
+    return false // Always use local file system
   }
 
   getStorageInfo(): { mode: string; configured: boolean } {
-    if (this.isProductionMode()) {
-      return { mode: 'GitHub', configured: true }
-    }
     return { mode: 'Local File System', configured: true }
   }
 }

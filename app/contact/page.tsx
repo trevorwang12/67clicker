@@ -192,7 +192,7 @@ export default function ContactPage() {
                   <Mail className="w-5 h-5 text-blue-500 mt-1" />
                   <div>
                     <h4 className="font-semibold">Email Support</h4>
-                    <p className="text-sm text-gray-600">support@growden.net</p>
+                    <p className="text-sm text-gray-600">support@67clickers.online</p>
                     <p className="text-xs text-gray-500">Response within 24 hours</p>
                   </div>
                 </div>

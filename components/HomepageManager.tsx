@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -141,6 +141,22 @@ export default function HomepageManager() {
     { value: 'from-teal-400 to-blue-500', label: 'Teal to Blue', preview: 'bg-gradient-to-r from-teal-400 to-blue-500' }
   ]
 
+  // Debounce ref for custom HTML section updates
+  const debounceTimeouts = useRef<Record<string, NodeJS.Timeout>>({})
+
+  const debouncedUpdateCustomHtmlSection = useCallback((sectionId: string, updates: any, delay = 1000) => {
+    // Clear existing timeout for this section
+    if (debounceTimeouts.current[sectionId]) {
+      clearTimeout(debounceTimeouts.current[sectionId])
+    }
+
+    // Set new timeout
+    debounceTimeouts.current[sectionId] = setTimeout(() => {
+      updateCustomHtmlSection(sectionId, updates)
+      delete debounceTimeouts.current[sectionId]
+    }, delay)
+  }, [content])
+
   // Drag and drop sensors
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -172,6 +188,15 @@ export default function HomepageManager() {
   // Load game gallery images on mount
   useEffect(() => {
     loadGameGalleryImages()
+  }, [])
+
+  // Cleanup debounce timeouts on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(debounceTimeouts.current).forEach(timeout => {
+        clearTimeout(timeout)
+      })
+    }
   }, [])
 
   // Featured Games functions
@@ -296,9 +321,14 @@ export default function HomepageManager() {
 
   // Game Gallery handlers
   const loadGameGalleryImages = async () => {
-    const content = await homepageManager.getContent()
-    if (content?.gameGallery?.images) {
-      setGameGalleryImages(content.gameGallery.images)
+    try {
+      const content = await homepageManager.getContent()
+      const images = content?.gameGallery?.images || []
+      setGameGalleryImages(images)
+      console.log('Gallery images loaded:', images.length)
+    } catch (error) {
+      console.error('Error loading gallery images:', error)
+      setGameGalleryImages([])
     }
   }
 
@@ -326,11 +356,13 @@ export default function HomepageManager() {
         const index = updatedImages.findIndex(img => img.id === editingGalleryImage.id)
         if (index !== -1) {
           updatedImages[index] = imageData
+          console.log('Updated image at index:', index)
+        } else {
+          console.error('Could not find image to update with ID:', editingGalleryImage.id)
         }
-        showAlert('success', 'Gallery image updated successfully!')
       } else {
         updatedImages.push(imageData)
-        showAlert('success', 'Gallery image added successfully!')
+        console.log('Added new image, total count:', updatedImages.length)
       }
 
       const updatedContent = {
@@ -344,8 +376,17 @@ export default function HomepageManager() {
       const success = await homepageManager.saveContent(updatedContent)
       if (success) {
         setContent(updatedContent)
-        loadGameGalleryImages()
+        setGameGalleryImages(updatedImages) // 直接更新状态
         handleGalleryImageDialogClose()
+
+        // 显示成功消息
+        if (editingGalleryImage) {
+          showAlert('success', 'Gallery image updated successfully!')
+        } else {
+          showAlert('success', 'Gallery image added successfully!')
+        }
+      } else {
+        showAlert('error', 'Failed to save gallery image')
       }
     } catch (error) {
       console.error('Error saving gallery image:', error)
@@ -367,10 +408,19 @@ export default function HomepageManager() {
   const handleGalleryImageDelete = async (imageId: string) => {
     if (confirm('Are you sure you want to delete this gallery image?')) {
       try {
+        console.log('Deleting image with ID:', imageId)
         const content = await homepageManager.getContent()
-        if (!content) return
+        if (!content) {
+          console.error('No content found')
+          return
+        }
 
-        const updatedImages = content.gameGallery?.images?.filter(img => img.id !== imageId) || []
+        const currentImages = content.gameGallery?.images || []
+        console.log('Current images count:', currentImages.length)
+
+        const updatedImages = currentImages.filter(img => img.id !== imageId)
+        console.log('Updated images count after deletion:', updatedImages.length)
+
         const updatedContent = {
           ...content,
           gameGallery: {
@@ -382,8 +432,11 @@ export default function HomepageManager() {
         const success = await homepageManager.saveContent(updatedContent)
         if (success) {
           setContent(updatedContent)
-          loadGameGalleryImages()
+          setGameGalleryImages(updatedImages) // 直接更新状态
+          console.log('Gallery image deleted successfully, new count:', updatedImages.length)
           showAlert('success', 'Gallery image deleted successfully!')
+        } else {
+          showAlert('error', 'Failed to save changes')
         }
       } catch (error) {
         console.error('Error deleting gallery image:', error)
@@ -432,11 +485,22 @@ export default function HomepageManager() {
     setTimeout(() => setAlert(null), 3000)
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setLoading(true)
-    // Content is automatically saved to localStorage via the manager
-    setLastSaved(new Date().toLocaleTimeString())
-    setLoading(false)
+    try {
+      const success = await homepageManager.saveContent(content)
+      if (success) {
+        setLastSaved(new Date().toLocaleTimeString())
+        showAlert('success', 'Homepage content saved successfully!')
+      } else {
+        showAlert('error', 'Failed to save homepage content')
+      }
+    } catch (error) {
+      console.error('Error saving homepage content:', error)
+      showAlert('error', 'Error occurred while saving')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleReset = async () => {
@@ -478,15 +542,49 @@ export default function HomepageManager() {
     setContent(homepageContent)
   }
 
+  // Local state for immediate UI updates
+  const updateCustomHtmlSectionLocal = (sectionId: string, updates: any) => {
+    setContent(prev => {
+      if (!prev) return prev
+      const currentSections = Array.isArray(prev.customHtmlSections) ? prev.customHtmlSections : []
+      const updatedSections = currentSections.map(section =>
+        section.id === sectionId ? { ...section, ...updates } : section
+      )
+      return {
+        ...prev,
+        customHtmlSections: updatedSections
+      }
+    })
+  }
+
+  // Debounced API update
   const updateCustomHtmlSection = async (sectionId: string, updates: any) => {
-    const currentSections = Array.isArray(content?.customHtmlSections) ? content.customHtmlSections : []
-    const updatedSections = currentSections.map(section => 
-      section.id === sectionId ? { ...section, ...updates } : section
-    )
-    
-    await homepageManager.updateSection('customHtmlSections' as keyof HomepageContent, updatedSections)
-    const homepageContent = await homepageManager.getContent()
-    setContent(homepageContent)
+    try {
+      console.log('Updating custom HTML section:', sectionId, updates)
+      const currentSections = Array.isArray(content?.customHtmlSections) ? content.customHtmlSections : []
+      const updatedSections = currentSections.map(section =>
+        section.id === sectionId ? { ...section, ...updates } : section
+      )
+
+      console.log('Updated sections:', updatedSections)
+      const success = await homepageManager.updateSection('customHtmlSections' as keyof HomepageContent, updatedSections)
+
+      if (success) {
+        console.log('Custom HTML section updated successfully')
+      } else {
+        console.error('Failed to update custom HTML section')
+        showAlert('error', 'Failed to update custom HTML section')
+        // Revert to server state on failure
+        const homepageContent = await homepageManager.getContent()
+        setContent(homepageContent)
+      }
+    } catch (error) {
+      console.error('Error updating custom HTML section:', error)
+      showAlert('error', 'Error occurred while updating custom HTML section')
+      // Revert to server state on failure
+      const homepageContent = await homepageManager.getContent()
+      setContent(homepageContent)
+    }
   }
 
   const removeCustomHtmlSection = async (sectionId: string) => {
@@ -1410,7 +1508,10 @@ export default function HomepageManager() {
                           <Badge variant="secondary">Section {index + 1}</Badge>
                           <Switch
                             checked={section.isVisible}
-                            onCheckedChange={(checked) => updateCustomHtmlSection(section.id, { isVisible: checked })}
+                            onCheckedChange={(checked) => {
+                              updateCustomHtmlSectionLocal(section.id, { isVisible: checked })
+                              updateCustomHtmlSection(section.id, { isVisible: checked })
+                            }}
                           />
                           <Label className="text-sm">
                             {section.isVisible ? 'Visible' : 'Hidden'}
@@ -1432,7 +1533,11 @@ export default function HomepageManager() {
                         <Input
                           id={`customHtmlTitle-${section.id}`}
                           value={section.title}
-                          onChange={(e) => updateCustomHtmlSection(section.id, { title: e.target.value })}
+                          onChange={(e) => {
+                            const newValue = e.target.value
+                            updateCustomHtmlSectionLocal(section.id, { title: newValue })
+                            debouncedUpdateCustomHtmlSection(section.id, { title: newValue })
+                          }}
                           placeholder="Enter section title"
                         />
                       </div>
@@ -1441,7 +1546,11 @@ export default function HomepageManager() {
                         <Textarea
                           id={`customHtmlContent-${section.id}`}
                           value={section.content}
-                          onChange={(e) => updateCustomHtmlSection(section.id, { content: e.target.value })}
+                          onChange={(e) => {
+                            const newValue = e.target.value
+                            updateCustomHtmlSectionLocal(section.id, { content: newValue })
+                            debouncedUpdateCustomHtmlSection(section.id, { content: newValue })
+                          }}
                           placeholder="Enter your custom HTML content here..."
                           rows={8}
                           className="font-mono text-sm"

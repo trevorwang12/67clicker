@@ -303,7 +303,15 @@ class HomepageManager {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'save', content })
       })
-      return response.ok
+
+      if (response.ok) {
+        // 触发前端更新事件
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('homepageUpdated'))
+        }
+        return true
+      }
+      return false
     } catch (error) {
       console.error('Error saving homepage content:', error)
       return false
@@ -318,7 +326,15 @@ class HomepageManager {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ section: sectionName, updates })
       })
-      return response.ok
+
+      if (response.ok) {
+        // 触发前端更新事件
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('homepageUpdated'))
+        }
+        return true
+      }
+      return false
     } catch (error) {
       console.error('Error updating homepage section:', error)
       return false
@@ -341,7 +357,15 @@ class HomepageManager {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ section: 'sectionOrder', updates: newOrder })
       })
-      return response.ok
+
+      if (response.ok) {
+        // 触发前端更新事件
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('homepageUpdated'))
+        }
+        return true
+      }
+      return false
     } catch (error) {
       console.error('Error updating section order:', error)
       return false

@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createAdminResponse, logAdminAccess } from '@/lib/admin-security'
 import { persistentDataManager } from '@/lib/persistent-data-manager'
-import { githubStorage } from '@/lib/github-storage'
 
 export async function GET() {
   const adminCheck = createAdminResponse()
@@ -15,29 +14,23 @@ export async function GET() {
     
     const storageInfo = persistentDataManager.getStorageInfo()
     const isProduction = process.env.NODE_ENV === 'production'
-    const hasGitHubToken = !!process.env.GITHUB_TOKEN
-    const isGitHubConfigured = githubStorage.isConfigured()
-    
+
     const status = {
       environment: process.env.NODE_ENV || 'development',
       storageMode: storageInfo.mode,
       isProduction,
-      hasGitHubToken,
-      isGitHubConfigured,
-      isPersistent: isProduction && isGitHubConfigured,
-      warning: !isProduction || !isGitHubConfigured 
-        ? 'Data changes may not persist in production without GitHub token' 
+      isPersistent: !isProduction, // 仅在开发环境持久化到文件
+      warning: isProduction
+        ? 'Production uses memory storage - changes reset on restart'
         : null,
       recommendations: []
     }
-    
+
     // Add recommendations based on current configuration
-    if (isProduction && !hasGitHubToken) {
-      status.recommendations.push('Set GITHUB_TOKEN environment variable for data persistence')
-    }
-    
-    if (!isProduction) {
-      status.recommendations.push('Data persistence will work automatically in production with GitHub token')
+    if (isProduction) {
+      status.recommendations.push('Production uses memory storage for security')
+    } else {
+      status.recommendations.push('Development changes persist to JSON files')
     }
     
     return NextResponse.json(status)

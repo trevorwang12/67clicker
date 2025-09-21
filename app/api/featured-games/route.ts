@@ -7,12 +7,14 @@ import path from 'path'
 
 interface FeaturedGame {
   id: string
-  title: string
+  name: string
   description: string
-  image: string
+  emoji: string
+  thumbnailUrl?: string
   gameUrl: string
   isActive: boolean
-  order: number
+  gradient: string
+  order?: number
   createdAt: string
   updatedAt: string
 }
@@ -40,8 +42,8 @@ export async function GET() {
     // Only return active featured games
     const activeFeaturedGames = featuredGames
       .filter(game => game.isActive)
-      .sort((a, b) => a.order - b.order)
-    
+      .sort((a, b) => (a.order || 0) - (b.order || 0))
+
     return NextResponse.json(activeFeaturedGames)
   } catch (error) {
     console.error('GET featured games error:', error)

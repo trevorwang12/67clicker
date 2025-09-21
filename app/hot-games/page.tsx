@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
 import HotGamesClient from './HotGamesClient'
+import StructuredData from '@/components/StructuredData'
+import { DataService } from '@/lib/data-service'
 import { promises as fs } from 'fs'
 import path from 'path'
 const getCurrentSiteConfig = () => ({
-  siteName: 'Growden',
-  siteDescription: 'Free online games and entertainment',
-  siteUrl: 'https://growden.net',
+  siteName: '67Clicker',
+  siteDescription: 'Modern gaming platform with premium experience',
+  siteUrl: 'https://67clickers.online',
 })
 
 async function loadSEOSettings() {
@@ -69,6 +71,36 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function HotGamesPage() {
-  return <HotGamesClient />
+export default async function HotGamesPage() {
+  // 获取热门游戏数据用于结构化数据
+  let hotGames: any[] = []
+  try {
+    const allGames = await DataService.getGames()
+    hotGames = allGames
+      .filter(game => game.isActive)
+      .sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0))
+      .slice(0, 20) // 取前20个热门游戏
+      .map(game => ({ id: game.id, name: game.name }))
+  } catch (error) {
+    console.error('Failed to load hot games for structured data:', error)
+  }
+
+  return (
+    <>
+      {/* 结构化数据 */}
+      <StructuredData
+        pageType="category"
+        pageData={{
+          name: 'Hot Games',
+          description: 'Play the hottest and most popular games! Discover trending games that everyone is playing.',
+          games: hotGames,
+          breadcrumbs: [
+            { name: 'Home', url: '/' },
+            { name: 'Hot Games', url: '/hot-games' }
+          ]
+        }}
+      />
+      <HotGamesClient />
+    </>
+  )
 }

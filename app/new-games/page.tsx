@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
 import NewGamesClient from './NewGamesClient'
+import StructuredData from '@/components/StructuredData'
+import { DataService } from '@/lib/data-service'
 import { promises as fs } from 'fs'
 import path from 'path'
 const getCurrentSiteConfig = () => ({
-  siteName: 'Growden',
-  siteDescription: 'Free online games and entertainment',
-  siteUrl: 'https://growden.net',
+  siteName: '67Clicker',
+  siteDescription: 'Modern gaming platform with premium experience',
+  siteUrl: 'https://67clickers.online',
 })
 
 async function loadSEOSettings() {
@@ -69,6 +71,36 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function NewGamesPage() {
-  return <NewGamesClient />
+export default async function NewGamesPage() {
+  // 获取新游戏数据用于结构化数据
+  let newGames: any[] = []
+  try {
+    const allGames = await DataService.getGames()
+    newGames = allGames
+      .filter(game => game.isActive)
+      .sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime())
+      .slice(0, 20) // 取前20个新游戏
+      .map(game => ({ id: game.id, name: game.name }))
+  } catch (error) {
+    console.error('Failed to load new games for structured data:', error)
+  }
+
+  return (
+    <>
+      {/* 结构化数据 */}
+      <StructuredData
+        pageType="category"
+        pageData={{
+          name: 'New Games',
+          description: 'Discover the latest and newest games! Play fresh games added to our collection.',
+          games: newGames,
+          breadcrumbs: [
+            { name: 'Home', url: '/' },
+            { name: 'New Games', url: '/new-games' }
+          ]
+        }}
+      />
+      <NewGamesClient />
+    </>
+  )
 }
